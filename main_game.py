@@ -13,7 +13,7 @@ def main_game(screen):
             if event.type == pygame.QUIT:
                 running = False
 
-        # Fill the screen with a color (replace this with your game code)
+        # Fill the screen with a color (replace this with your game code) 
         screen.fill(WHITE)
 
         # Game update code here

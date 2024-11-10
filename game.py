@@ -1,4 +1,4 @@
-#import lib = python, sys
+#import lib = python, sys 
 import pygame
 import sys
 from start_screen import start_screen

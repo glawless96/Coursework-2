@@ -21,6 +21,9 @@ pygame.font.init()
 title_font = pygame.font.Font(None, 74)
 button_font = pygame.font.Font(None, 50)
 
+STARTSCREEN_Image = 'data\\images\\bg\\StartScreen_Background.jpg'
+
+#function to draw buttons
 def draw_button(screen, text, rect, color, hover_color, click_color, opacity=255):
     """Draws a button with text and changes color on hover."""
     mouse_pos = pygame.mouse.get_pos()
@@ -48,7 +51,7 @@ def draw_button(screen, text, rect, color, hover_color, click_color, opacity=255
 def start_screen(screen):
     
     #load background image
-    start_bgImage = pygame.image.load('data\images\Start_Screen_Background.jpg')
+    start_bgImage = pygame.image.load(STARTSCREEN_Image)
     start_bgImage = pygame.transform.scale(start_bgImage, (WIDTH, HEIGHT))
     
     title_text = title_font.render("", True, WHITE)
@@ -62,8 +65,8 @@ def start_screen(screen):
         screen.blit(title_text, title_rect)
 
         # Draw buttons
-        draw_button(screen, "Start Game", start_button_rect, BLUE, DARK_BLUE, (0, 255, 0))
-        draw_button(screen, "Quit", quit_button_rect, RED, DARK_RED, (255, 0, 0))
+        draw_button(screen, "Start Game", start_button_rect, BLUE, DARK_BLUE, (0, 255, 0), 100)
+        draw_button(screen, "Quit", quit_button_rect, RED, DARK_RED, (255, 0, 0), 100)
 
         pygame.display.flip()  # Update the display
 
