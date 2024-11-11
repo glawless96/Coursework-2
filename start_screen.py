@@ -88,5 +88,7 @@ def start_screen(screen):
                 if newGame_button_rect.collidepoint(mouse_pos):
                     return  # Start the game
                 elif continue_button_rect.collidepoint(mouse_pos):
+                    return # Run level screen
+                elif quit_button_rect.collidepoint(mouse_pos):
                     pygame.quit()
                     sys.exit()
