@@ -2,6 +2,9 @@
 import pygame
 import sys
 
+#importing buttons
+from button import Button
+
 #Setting rgb colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -12,12 +15,6 @@ DARK_RED = (128, 0, 0)
 
 #Set screen width and height
 WIDTH, HEIGHT = 800, 600
-# Button dimensions and positions
-newGame_button_rect = pygame.Rect(50, 100, 200, 50)
-                                #width , height
-continue_button_rect = pygame.Rect(50, 160, 200, 50)
-
-quit_button_rect = pygame.Rect(50, 500, 100, 50)
 
 NEWGAME_BUTTONLABEL = "New Game"
 CONTINUE_BUTTONLABEL = "Continue..."
@@ -29,31 +26,7 @@ title_font = pygame.font.Font(None, 74)
 button_font = pygame.font.Font(None, 50)
 
 STARTSCREEN_Image = 'data\\images\\bg\\StartScreen_Background.jpg'
-
-#function to draw buttons
-def draw_button(screen, text, rect, color, hover_color, click_color, opacity=255):
-    mouse_pos = pygame.mouse.get_pos()
-    mouse_click = pygame.mouse.get_pressed()[0]
-    if rect.collidepoint(mouse_pos):
-        button_color = hover_color
-        opacity = 255
-        if mouse_click:
-            button_color = click_color
-            opacity = 255
-    else:
-        button_color = color
-
-    button_color_with_opacity = (*button_color[:3], opacity)
-    button_surface = pygame.Surface(rect.size, pygame.SRCALPHA)
-    pygame.draw.rect(button_surface, button_color_with_opacity, button_surface.get_rect(), border_radius=10)
-    
-    screen.blit(button_surface, rect.topleft)
-    pygame.draw.rect(screen, BLACK, rect, 3, border_radius=10)
-
-    button_text = button_font.render(text, True, BLACK)
-    text_rect = button_text.get_rect(center=rect.center)
-    screen.blit(button_text, text_rect)
-    
+ 
 def start_screen(screen):
     
     #load background image
@@ -63,32 +36,44 @@ def start_screen(screen):
     title_text = title_font.render("", True, WHITE)
     title_rect = title_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 100))
 
-    while True:
+    # after hover (199, 193, 110)
+    new_game_button = Button(50, 100, 200, 50, shape = 'rect', color = (254, 247, 140), text = NEWGAME_BUTTONLABEL,
+                    hover_color=(245, 238, 135), text_color = (255, 255, 255), font_size = 36, alpha = 150)
+    continue_game_button = Button(50, 160, 200, 50, shape='rect', color = (254, 247, 140), text = CONTINUE_BUTTONLABEL,
+                hover_color=(245, 238, 135), text_color = (255, 255, 255), font_size = 36, alpha = 150)
+    quit_game_button = Button(50, 500, 100, 50, shape = 'circle', color = (254, 247, 140), text = QUIT_BUTTONLABEL,
+                hover_color=(245, 238, 135), text_color = (255, 255, 255), font_size = 15, alpha = 150)
+
+    buttons = [new_game_button, continue_game_button, quit_game_button]
+
+    running = True
+
+    while running:
         #set screen fill color
         screen.fill(BLACK)
         #set background
         screen.blit(start_bgImage, (0, 0))
         screen.blit(title_text, title_rect)
-
-        # Draw buttons
-        #draw_button(screen, text,                   rect,              color,          hover_color,    click_color,    opacity=255
-        draw_button(screen, NEWGAME_BUTTONLABEL, newGame_button_rect, (254, 247, 140), (245, 238, 135), (199, 193, 110) , 150)
-        draw_button(screen, CONTINUE_BUTTONLABEL, continue_button_rect, (254, 247, 140), (245, 238, 135), (199, 193, 110), 150)
-        draw_button(screen, QUIT_BUTTONLABEL, quit_button_rect, (254, 247, 140), (245, 238, 135), (199, 193, 110), 150)
-
-        pygame.display.flip()  # Update the display
-
+        
+        mouse_pos = pygame.mouse.get_pos()
+        
+        for button in buttons:
+            button.update_hover(mouse_pos)
+            button.draw(screen)
+           
         # Event loop
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+                running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_pos = event.pos
-                if newGame_button_rect.collidepoint(mouse_pos):
-                    return  # Start the game
-                elif continue_button_rect.collidepoint(mouse_pos):
-                    return # Run level screen
-                elif quit_button_rect.collidepoint(mouse_pos):
-                    pygame.quit()
-                    sys.exit()
+                for button in  buttons:
+                    if button.is_clicked(event.pos):
+                        if button == new_game_button:
+                            return 'main_game'
+                        elif button == continue_game_button:
+                            return 'main_game'
+                        elif button == quit_game_button:
+                            running = False
+        pygame.display.flip()  # Update the display
+
+    pygame.quit()
