@@ -69,11 +69,11 @@ def start_screen(screen):
                 for button in  buttons:
                     if button.is_clicked(event.pos):
                         if button == new_game_button:
-                            return 'main_game'
+                            return 'level_1' #start new game
                         elif button == continue_game_button:
-                            return 'main_game'
+                            return 'main_game' #show level selection
                         elif button == quit_game_button:
-                            running = False
+                            running = False #quit
         pygame.display.flip()  # Update the display
 
     pygame.quit()
