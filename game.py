@@ -5,6 +5,9 @@ import sys
 import start_screen
 import main_game
 
+import level_1
+import level_2
+
 #Set the name for the window
 GAMENAME = 'Coursework 2 Demo Game'
 
@@ -20,9 +23,16 @@ pygame.display.set_caption(GAMENAME)
 while True:
     if current_screen == 'start_screen':
         current_screen = start_screen.start_screen(screen)
+    elif current_screen == 'level_1':
+        current_screen = level_1.start_level_1(screen)
+    elif current_screen == 'level_2':
+        current_screen = level_2.start_level_2(screen)
     elif current_screen == 'main_game':
         current_screen = main_game.main_game(screen)
     else: 
         break
     
+
+
+
 pygame.quit()
