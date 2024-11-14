@@ -21,9 +21,20 @@ def generate_maze(rows, cols):
     dfs(1, 1)
     return maze
 
-def draw_maze(screen, maze, wall_image, path_image, cell_size, color):
+def draw_maze(screen, maze, wall_image, path_image, end_image, cell_size, color):
+    rows, cols = len(maze), len(maze[0])
     for y in range(len(maze)):
-        for x in range(len(maze[0])):                
-            image = wall_image if maze[y][x] == 1 else path_image
-            screen.blit(image, (x * cell_size, y * cell_size))
-            #pygame.draw.rect(screen, color, (x * cell_size, y * cell_size, cell_size, cell_size))
+        for x in range(len(maze[0])): 
+            if (x, y) == (cols - 3, rows - 3):
+                # Draw the end image at this cell
+                screen.blit(end_image, (x * cell_size, y * cell_size))
+            else:
+                # Draw wall or path based on maze structure
+                if maze[y][x] == 1:
+                    screen.blit(wall_image, (x * cell_size, y * cell_size))
+                else:
+                    screen.blit(path_image, (x * cell_size, y * cell_size))
+
+def check_for_end_collision(player_x, player_y, end_x, end_y):
+    if(player_x, player_y) == (end_x, end_y):
+        return 'questionnaire'
