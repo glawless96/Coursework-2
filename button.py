@@ -37,6 +37,7 @@ class Button:
         self.current_alpha = alpha
         self.is_hovered = False
         self.current_scale = 1.0
+        self.active = True
 
     def draw(self, surface):
         # Create a temporary surface with transparency
@@ -68,8 +69,8 @@ class Button:
                                       self.y - (self.height - self.original_height) // 2))
 
     def update_hover(self, mouse_pos):
-        self.is_hovered = self.get_rect().collidepoint(mouse_pos)
-
+        self.is_hovered = self.get_rect().collidepoint(mouse_pos) if self.active else False
+        print('is hovered ', self.is_hovered )
         if self.is_hovered:
             # Increase alpha for fade-in effect
             self.current_alpha = min(255, self.current_alpha + self.animation_speed)
@@ -92,3 +93,7 @@ class Button:
 
     def is_clicked(self, mouse_pos):
         return self.is_hovered and self.get_rect().collidepoint(mouse_pos)
+    
+    def deactivate(self):
+        self.active = False
+        self.color = (150, 150, 150) 
