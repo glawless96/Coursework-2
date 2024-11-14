@@ -38,11 +38,11 @@ def start_screen(screen):
 
     # after hover (199, 193, 110)
     new_game_button = Button(50, 100, 200, 50, shape = 'rect', color = (254, 247, 140), text = NEWGAME_BUTTONLABEL,
-                    hover_color=(245, 238, 135), text_color = (255, 255, 255), font_size = 36, alpha = 150)
+                    hover_color=(245, 238, 135), text_color = (0, 0, 0), font_size = 36, alpha = 170, border_radius = 10)
     continue_game_button = Button(50, 160, 200, 50, shape='rect', color = (254, 247, 140), text = CONTINUE_BUTTONLABEL,
-                hover_color=(245, 238, 135), text_color = (255, 255, 255), font_size = 36, alpha = 150)
-    quit_game_button = Button(50, 500, 100, 50, shape = 'circle', color = (254, 247, 140), text = QUIT_BUTTONLABEL,
-                hover_color=(245, 238, 135), text_color = (255, 255, 255), font_size = 15, alpha = 150)
+                hover_color=(245, 238, 135), text_color = (0, 0, 0), font_size = 36, alpha = 170, border_radius = 10)
+    quit_game_button = Button(50, 500, 200, 50, shape = 'rect', color = (254, 247, 140), text = QUIT_BUTTONLABEL,
+                hover_color=(245, 238, 135), text_color = (0, 0, 0), font_size = 36, alpha = 170, border_radius = 10)
 
     buttons = [new_game_button, continue_game_button, quit_game_button]
 
