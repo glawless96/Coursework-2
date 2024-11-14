@@ -1,6 +1,7 @@
 import pygame
 import maze
 import collectibles
+import maze_completion
 
 # Screen dimensions and properties
 SCREEN_WIDTH = 800
@@ -15,8 +16,11 @@ BLUE = (0, 0, 255)
 clock = pygame.time.Clock()
 MAZE_WALL_IMAGEURL = 'data\\images\\maze\\maze_wall.png'
 MAZE_PATH_IMAGEURL = 'data\\images\\maze\\path2.png'
+MAZE_END_IMAGEURL = 'data\\images\\maze\\portal.png'
 PLAYER_IMAGEURL = 'data\\images\\player_character\\player_character.png'
-COLLECTABLE_IMAGEURL = 'data\\images\\collectables\\collectable_1.png'
+COLLECTABLE_IMAGEURL = 'data\\images\\collectables\\collectable_2.png'
+
+collected_numbers = []
 
 def start_level_1(screen):
     # Load images
@@ -28,6 +32,10 @@ def start_level_1(screen):
 
     player_image = pygame.image.load(PLAYER_IMAGEURL).convert_alpha()
     player_image = pygame.transform.scale(player_image, (CELL_SIZE, CELL_SIZE))
+
+    end_image = pygame.image.load(MAZE_END_IMAGEURL)
+    end_image = pygame.transform.scale(end_image, (CELL_SIZE, CELL_SIZE))
+
 
     collectible_images = []
     for i in range(1, 6):
@@ -65,7 +73,7 @@ def start_level_1(screen):
         if keys[pygame.K_RIGHT] and generated_maze[player_y][player_x + 1] == 0:
             player_x += 1
 
-        maze.draw_maze(screen, generated_maze, wall_image, path_image, CELL_SIZE, BLACK)
+        maze.draw_maze(screen, generated_maze, wall_image, path_image, end_image, CELL_SIZE, BLACK)
         collectibles.draw_collectibles(screen, generated_collectibles, CELL_SIZE)
         screen.blit(player_image, (player_x * CELL_SIZE, player_y * CELL_SIZE))
 
@@ -73,11 +81,16 @@ def start_level_1(screen):
         new_collectibles_pos = []
         for x, y, image, number in generated_collectibles:
             if (player_x, player_y) == (x, y):
+                collected_numbers.append(number)
                 print(f'Collected item at ({x}, {y}) with number {number}!')
             else:
                 new_collectibles_pos.append((x, y, image, number))
         generated_collectibles = new_collectibles_pos
             
+        endcollision = maze.check_for_end_collision(player_x, player_y, cols - 3, rows - 3)
+        if endcollision == 'questionnaire':
+            maze_completion.question_screen(screen, collected_numbers)
+            return 
 
         pygame.display.flip()
         clock.tick(10) 
