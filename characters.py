@@ -4,9 +4,10 @@ import time
 class health(pygame.sprite.Sprite):
     def __init__(self, total_health):
         super().__init__()
-        self.image = pygame.image.load("data\\images\\player_character\\player_character.png")
+        self.image = pygame.image.load("data\\images\\player_character\\heart.png")
         self.image = pygame.transform.scale(self.image, (10, 10))
         self.health = total_health
+        self.hearts = [self.image, self.image, self.image]
 
     def take_damage(self):
         self.health -= 1
@@ -14,7 +15,11 @@ class health(pygame.sprite.Sprite):
     def isDead(self):
         return self.health == 0
 
-
+    def draw(self, screen):
+        space = 10
+        for heart in self.hearts:
+            screen.blit(heart, (680 + space, 30))
+            space += 30
 
 class baseCharacterClass(pygame.sprite.Sprite):
     def __init__(self):
@@ -52,6 +57,8 @@ class baseCharacterClass(pygame.sprite.Sprite):
             self.health.take_damage()
             self.invincible = True
             self.invincibility_start_time = time.time()
+            if len(self.health.hearts) > 0:
+                self.health.hearts.pop()
 
         
         if pygame.sprite.spritecollide(self, wall, dokill = False):
