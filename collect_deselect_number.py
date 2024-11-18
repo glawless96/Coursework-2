@@ -8,8 +8,7 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Number Generation")
 font = pygame.font.SysFont("Arial", 30)
 BLACK = (0, 0, 0)
-PINK = (255, 105, 180)
-GREEN = (0, 255, 0)  
+PINK = (255, 105, 180)  
 WHITE = (255, 255, 255)  
 
 backpack_rect = pygame.Rect(0, screen_height - 50, screen_width, 50)  
@@ -17,7 +16,7 @@ positions = [
     (random.randint(0, screen_width - 100), random.randint(0, screen_height - 150))  
     for _ in range(10)
 ]
-random_numbers = [random.randint(0, 60) for _ in range(10)]
+random_numbers = [random.randint(0, 100) for _ in range(10)]
 
 collected_numbers = []
 collected_positions = []
