@@ -18,7 +18,17 @@ def generate_maze(rows, cols):
                 maze[y + dy // 2][x + dx // 2] = 0  # Clear the wall between cells
                 dfs(nx, ny)
 
+    # Generate the maze using DFS
     dfs(1, 1)
+
+    # Add additional random paths to create more openings
+    extra_paths = (rows * cols) // 20  # Adjust this value to control the number of additional paths
+    for _ in range(extra_paths):
+        x = random.randint(1, cols - 2)
+        y = random.randint(1, rows - 2)
+        if maze[y][x] == 1:  # Only add a path where there's currently a wall
+            maze[y][x] = 0
+
     return maze
 
 def draw_maze(screen, maze, wall_image, path_image, end_image, cell_size, color):
