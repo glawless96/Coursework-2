@@ -3,7 +3,7 @@ import pygame
 import sys
 
 import start_screen
-import main_game
+import level_selection
 
 import level_1
 import level_2
@@ -28,7 +28,7 @@ while True:
     elif current_screen == 'level_2':
         current_screen = level_2.start_level_2(screen)
     elif current_screen == 'main_game':
-        current_screen = main_game.main_game(screen)
+        current_screen = level_selection.main_game(screen)
     else: 
         break
     
