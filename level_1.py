@@ -3,26 +3,30 @@ import maze
 import collectibles
 import maze_completion
 
-# Screen dimensions and properties
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-CELL_SIZE = 30
+from static import Maze, Screen, Character, Color
 
-# Colors
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-BLUE = (0, 0, 255)
+static_maze = Maze()
+color = Color()
+main_screen = Screen()
+char_image = Character()
+
+# Screen dimensions and properties
+SCREEN_WIDTH = main_screen.width
+SCREEN_HEIGHT = main_screen.height
+CELL_SIZE = static_maze.cell_size
+
+MAZE_WALL_IMAGEURL = static_maze.wall_image #'data\\images\\maze\\maze_wall.png'
+MAZE_PATH_IMAGEURL = static_maze.path_image #'data\\images\\maze\\path2.png'
+MAZE_END_IMAGEURL = static_maze.end_maze_image #'data\\images\\maze\\portal.png'
+PLAYER_IMAGEURL = char_image.front_image
+COLLECTABLE_IMAGEURL = 'data\\images\\collectables\\collectable_2.png'
 
 clock = pygame.time.Clock()
-MAZE_WALL_IMAGEURL = 'data\\images\\maze\\maze_wall.png'
-MAZE_PATH_IMAGEURL = 'data\\images\\maze\\path2.png'
-MAZE_END_IMAGEURL = 'data\\images\\maze\\portal.png'
-PLAYER_IMAGEURL = 'data\\images\\player_character\\player_character.png'
-COLLECTABLE_IMAGEURL = 'data\\images\\collectables\\collectable_2.png'
 
 collected_numbers = []
 
 def start_level_1(screen):
+
     # Load images
     wall_image = pygame.image.load(MAZE_WALL_IMAGEURL).convert()
     wall_image = pygame.transform.scale(wall_image, (CELL_SIZE, CELL_SIZE))
@@ -37,8 +41,14 @@ def start_level_1(screen):
     end_image = pygame.transform.scale(end_image, (CELL_SIZE, CELL_SIZE))
 
 
+    #Generate Random Target Number
+    target_number = collectibles.generate_target_number(1)
+    all_possible_solutions_set = collectibles.get_addition_solutions_set(target_number)
+    print('target number ',target_number)
+    print('all_possible_solutions ',all_possible_solutions_set)
     collectible_images = []
-    for i in range(1, 6):
+    
+    for i in range(1, len(all_possible_solutions_set) + 10, 1):
         image = pygame.image.load(COLLECTABLE_IMAGEURL).convert_alpha()
         image = pygame.transform.scale(image, (CELL_SIZE, CELL_SIZE))
         collectible_images.append(image)
@@ -56,7 +66,7 @@ def start_level_1(screen):
     running = True
 
     while running:
-        screen.fill(BLACK)
+        screen.fill(color.black)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -73,7 +83,7 @@ def start_level_1(screen):
         if keys[pygame.K_RIGHT] and generated_maze[player_y][player_x + 1] == 0:
             player_x += 1
 
-        maze.draw_maze(screen, generated_maze, wall_image, path_image, end_image, CELL_SIZE, BLACK)
+        maze.draw_maze(screen, generated_maze, wall_image, path_image, end_image, CELL_SIZE, color.black)
         collectibles.draw_collectibles(screen, generated_collectibles, CELL_SIZE)
         screen.blit(player_image, (player_x * CELL_SIZE, player_y * CELL_SIZE))
 
