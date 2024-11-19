@@ -2,6 +2,8 @@
 import pygame
 import sys
 
+from static import ScreenData
+
 import start_screen
 import level_selection
 
@@ -12,7 +14,8 @@ import level_2
 GAMENAME = 'Coursework 2 Demo Game'
 
 # Screen dimensions and setup
-WIDTH, HEIGHT = 800, 600
+screen = ScreenData()
+WIDTH , HEIGHT = screen.width, screen.height
 
 current_screen = 'start_screen'
 # Initialize Pygame and set up the screen
@@ -32,7 +35,4 @@ while True:
     else: 
         break
     
-
-
-
 pygame.quit()
