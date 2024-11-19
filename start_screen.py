@@ -4,28 +4,28 @@ import sys
 
 #importing buttons
 from button import Button
+from static import ScreenData, StartScreenData, ColorData
 
 #Setting rgb colors
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-BLUE = (0, 0, 255)
-DARK_BLUE = (0, 0, 128)
-RED = (255, 0, 0)
-DARK_RED = (128, 0, 0)
+color = ColorData()
+
 
 #Set screen width and height
-WIDTH, HEIGHT = 800, 600
+screen = ScreenData()
+WIDTH , HEIGHT = screen.width, screen.height
 
-NEWGAME_BUTTONLABEL = "New Game"
-CONTINUE_BUTTONLABEL = "Continue..."
-QUIT_BUTTONLABEL = "Exit"
+start_screen_static = StartScreenData()
+
+NEWGAME_BUTTONLABEL = start_screen_static.new_button
+CONTINUE_BUTTONLABEL = start_screen_static.contiune_button
+QUIT_BUTTONLABEL = start_screen_static.quit_button
 
 #fonts
 pygame.font.init()
 title_font = pygame.font.Font(None, 74)
 button_font = pygame.font.Font(None, 50)
 
-STARTSCREEN_Image = 'data\\images\\bg\\StartScreen_Background.jpg'
+STARTSCREEN_Image = start_screen_static.background_image
  
 def start_screen(screen):
     
@@ -33,7 +33,7 @@ def start_screen(screen):
     start_bgImage = pygame.image.load(STARTSCREEN_Image)
     start_bgImage = pygame.transform.scale(start_bgImage, (WIDTH, HEIGHT))
     
-    title_text = title_font.render("", True, WHITE)
+    title_text = title_font.render("", True, color.white)
     title_rect = title_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 100))
 
     # after hover (199, 193, 110)
@@ -50,7 +50,7 @@ def start_screen(screen):
 
     while running:
         #set screen fill color
-        screen.fill(BLACK)
+        screen.fill(color.black)
         #set background
         screen.blit(start_bgImage, (0, 0))
         screen.blit(title_text, title_rect)
