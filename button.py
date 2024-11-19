@@ -70,7 +70,6 @@ class Button:
 
     def update_hover(self, mouse_pos):
         self.is_hovered = self.get_rect().collidepoint(mouse_pos) if self.active else False
-        print('is hovered ', self.is_hovered )
         if self.is_hovered:
             # Increase alpha for fade-in effect
             self.current_alpha = min(255, self.current_alpha + self.animation_speed)
