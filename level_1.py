@@ -6,6 +6,7 @@ from player import Player
 from enemy import Enemy
 from collectibles import Collectible
 from static import MazeData, ScreenData, CharacterData, ColorData, EnemyData
+from head_up_display import HeadUpDisplay
 
 static_maze = MazeData()
 color = ColorData()
@@ -43,10 +44,6 @@ def start_level_1(screen):
     end_image = pygame.image.load(MAZE_END_IMAGEURL)
     end_image = pygame.transform.scale(end_image, (CELL_SIZE, CELL_SIZE))
 
-    #maze Rows and cols
-    rows = SCREEN_HEIGHT // CELL_SIZE
-    cols = SCREEN_WIDTH // CELL_SIZE
-
     #Generate Random Target Number
     target_number = Collectible.generate_target_number(1)
     all_possible_solutions = Collectible.get_addition_solutions_set(target_number)
@@ -55,6 +52,12 @@ def start_level_1(screen):
 
     for i in range(0, 10):
         all_possible_solutions.append(random.randint(1, 100))
+
+    hud = HeadUpDisplay(target_number)
+
+    #maze Rows and cols
+    rows = (SCREEN_HEIGHT - hud.height) // CELL_SIZE
+    cols = SCREEN_WIDTH // CELL_SIZE
 
     #generate Maze
     generated_maze = Maze(rows, cols)
@@ -94,11 +97,13 @@ def start_level_1(screen):
         for item in collected_items:
             player.collect([item])
 
+        hud.update_collectiables(collected_items)
 
         #Player Enemy Collision    
         if check_enemy_collision(player, enemies):
             player.handle_collision(screen)
-
+            hud.update_health(player.health)
+            
             if player.health <= 0:
                 lose_text = pygame.font.Font(None, 36).render("Game Over! You ran out of health.", True, (255, 0, 0))
                 screen.blit(lose_text, (SCREEN_WIDTH // 2 - lose_text.get_width() // 2, SCREEN_HEIGHT // 2))
@@ -107,6 +112,8 @@ def start_level_1(screen):
 
                 running = False
 
+
+        hud.draw_header(screen)
         generated_maze.draw_maze(screen, wall_image, path_image, end_image)
         player.draw(screen)
 

@@ -47,3 +47,8 @@ class ColorData():
         self.dark_blue = (0, 0, 128)
         self.red = (255, 0, 0)
         self.dark_red = (128, 0, 0)
+
+class HeaderData():
+    def __init__(self):
+        self.height = 100
+        self.width = 1270 

@@ -1,9 +1,10 @@
 import pygame
 import random
 
-from static import MazeData
+from static import MazeData, HeaderData
 
 maze_static = MazeData()
+header_static = HeaderData()
 
 CELL_SIZE = maze_static.cell_size
 
@@ -24,6 +25,8 @@ class Enemy:
         self.speed = speed  # Speed: moves every `speed` frames
         self.move_counter = 0
         self.maze = maze
+
+        self.offset = header_static.height
 
     def get_random_position(self, maze):
         while True: # Loop and place the enemy on the first path element
@@ -59,5 +62,5 @@ class Enemy:
                     self.row, self.col = self.row + dr, self.col + dc
 
     def draw(self, screen):
-        x, y = self.col * CELL_SIZE, self.row * CELL_SIZE
+        x, y = self.col * CELL_SIZE, self.row * CELL_SIZE + self.offset
         screen.blit(self.image, (x, y))

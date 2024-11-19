@@ -1,10 +1,11 @@
 import random
 import pygame
 
-from static import MazeData
+from static import MazeData, HeaderData
 from collectibles import Collectible
 
 maze_static = MazeData()
+header_static = HeaderData()
 
 CELL_SIZE = maze_static.cell_size
 
@@ -14,6 +15,7 @@ class Maze():
         self.cols = cols
         self.layout = self.generate_maze()
         self.collectibles = []
+        self.offset = header_static.height
     
     def generate_maze(self):
         maze = [[1 for _ in range(self.cols)] for _ in range(self.rows)]  # 1 means wall, 0 means path
@@ -50,7 +52,7 @@ class Maze():
                 r = random.randint(1, self.rows - 2)
                 c = random.randint(1, self.cols - 2)
                 if self.layout[r][c] == 0:  # Only place on a path
-                    collectible = Collectible(c * CELL_SIZE, r * CELL_SIZE, [collectible_image],  animation_paths, str(labels[i]))
+                    collectible = Collectible(c * CELL_SIZE, r * CELL_SIZE , [collectible_image],  animation_paths, str(labels[i]))
                     self.collectibles.append(collectible)
                     break
     
@@ -60,13 +62,13 @@ class Maze():
             for col in range(self.cols): 
                 if (col, row) == (cols - 3, rows - 3):
                     # Draw the end image at this cell
-                    screen.blit(end_image, (col * CELL_SIZE, row * CELL_SIZE))
+                    screen.blit(end_image, (col * CELL_SIZE, row * CELL_SIZE + self.offset))
                 else:
                     # Draw wall or path based on maze structure
                     if self.layout[row][col] == 1:
-                        screen.blit(wall_image, (col * CELL_SIZE, row * CELL_SIZE))
+                        screen.blit(wall_image, (col * CELL_SIZE, row * CELL_SIZE + self.offset))
                     else:
-                        screen.blit(path_image, (col * CELL_SIZE, row * CELL_SIZE))
+                        screen.blit(path_image, (col * CELL_SIZE, row * CELL_SIZE + self.offset))
         
 
     def check_collectibles_collision(self, player):

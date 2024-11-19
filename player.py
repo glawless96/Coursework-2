@@ -1,10 +1,12 @@
 import pygame
-from static import CharacterData, HealthData, MazeData
+from static import CharacterData, HealthData, MazeData, HeaderData
 
 maze_static = MazeData()
 character_static = CharacterData()
 health_static = HealthData()
-TILE_SIZE = maze_static.cell_size
+header_static = HeaderData()
+
+CELL_SIZE = maze_static.cell_size
 
 class Player:
     def __init__(self, start_pos):
@@ -20,6 +22,8 @@ class Player:
         self.is_blipping = False
         self.blip_timer = 0
         self.inventory = [] #collected Items
+        self.offset = header_static.height
+
 
     def move(self, maze, direction):
         dr, dc = direction
@@ -56,13 +60,13 @@ class Player:
         if self.is_blipping:
             # Toggle visibility every 5 frames
             if self.blip_timer % 10 < 5:
-                x, y = self.col * TILE_SIZE, self.row * TILE_SIZE
+                x, y = self.col * CELL_SIZE, self.row * CELL_SIZE + self.offset
                 screen.blit(self.image, (x, y))
             self.blip_timer -= 1
             if self.blip_timer <= 0:
                 self.is_blipping = False
         else:
-            x, y = self.col * TILE_SIZE, self.row * TILE_SIZE
+            x, y = self.col * CELL_SIZE, self.row * CELL_SIZE + self.offset
             screen.blit(self.image, (x, y))
 
     def collect(self, collectibles):

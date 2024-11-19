@@ -1,15 +1,17 @@
 import pygame
 import random
-from static import ColorData, MazeData
+from static import ColorData, MazeData, HeaderData
 
 maze_static = MazeData()
 color = ColorData()
+header_static = HeaderData()
+
 CELL_SIZE = maze_static.cell_size
 
 class Collectible():
     def __init__(self, x, y, image_paths, animation_paths=None, label="Collect Me"):
         self.x = x
-        self.y = y
+        self.y = y + header_static.height
         self.image_paths = image_paths
         self.images = [pygame.image.load(image).convert_alpha() for image in image_paths]
         self.images = [pygame.transform.scale( img, (CELL_SIZE, CELL_SIZE)) for img in self.images]
@@ -25,6 +27,8 @@ class Collectible():
         self.label = label
         self.font = pygame.font.Font(None, 30)  # Adjust font size as necessary
         self.text_surface = self.font.render(self.label, True, (0, 0, 0))
+
+        self.offset = header_static.height
 
     def draw(self, screen):
         if self.is_collected:
@@ -47,7 +51,7 @@ class Collectible():
         self.animation_frame = 0
 
     def is_colliding(self, player):
-        player_rect = pygame.Rect(player.col * CELL_SIZE, player.row * CELL_SIZE, CELL_SIZE, CELL_SIZE)
+        player_rect = pygame.Rect(player.col * CELL_SIZE, player.row * CELL_SIZE + self.offset, CELL_SIZE, CELL_SIZE)
         return self.rect.colliderect(player_rect)
     
     def generate_target_number(level):
