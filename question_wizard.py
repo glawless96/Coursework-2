@@ -5,6 +5,7 @@ import sys
 import random
 from button import Button
 from question_generator import Question
+from collision_handler import handle_collision
 
 # Screen settings
 WIDTH, HEIGHT = 800, 600
