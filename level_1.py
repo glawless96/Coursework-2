@@ -112,15 +112,12 @@ def start_level_1(screen):
 
                 running = False
 
-
         hud.draw_header(screen)
         generated_maze.draw_maze(screen, wall_image, path_image, end_image)
         player.draw(screen)
 
         for collectible in generated_maze.collectibles:
             collectible.draw(screen)
-
-        player.draw_health(screen)
 
         #Enemy movement
         for enemy in enemies:
