@@ -12,7 +12,7 @@ class CharacterData():
 
 class HealthData():
     def __init__(self):
-        self.maxHealth = 5
+        self.maxHealth = 1
         self.health_image = "data\\images\\player_character\\heart.png"
 
 class EnemyData():

@@ -15,7 +15,7 @@ class HeadUpDisplay():
         self.time_start = pygame.time.get_ticks()
         self.collected_items = []
         self.target_number = target_number
-        self.health = 5
+        self.health = health_static.maxHealth
         self.health_icon_size = (40, 40)
         self.health_images = [
             pygame.transform.scale(pygame.image.load(health_static.health_image), self.health_icon_size)

@@ -3,6 +3,7 @@ import pygame
 
 from static import MazeData, HeaderData
 from collectibles import Collectible
+from popup import PopUp
 
 maze_static = MazeData()
 header_static = HeaderData()
@@ -73,12 +74,13 @@ class Maze():
 
     def check_collectibles_collision(self, player):
         collected_items = []
-        for collectible in self.collectibles:
-            if collectible.is_colliding(player):
-                collected_items.append(collectible)
-                self.collectibles.remove(collectible)
+        for collectible in self.collectibles: #Iterate over all collectaibles
+            if collectible.is_colliding(player): # checking if layer collides with the collectibles
+                collected_items.append(collectible) 
+                #self.collectibles.remove(collectible)
         return collected_items
-
-def check_for_end_collision(player_x, player_y, end_x, end_y):
-    if(player_x, player_y) == (end_x, end_y):
-        return 'questionnaire'
+    
+    def remove_collectible_maze(self):
+        for collectible in self.collectibles:
+            if collectible.is_collected:
+                self.collectibles.remove(collectible)
