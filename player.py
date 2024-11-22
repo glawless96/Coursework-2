@@ -74,5 +74,3 @@ class Player:
             if collectible.is_colliding(self):
                 collectible.collect()
                 self.inventory.append(collectible)
-                # collectibles.remove(collectible)
-                print(f"Collected item at ({collectible.x}, {collectible.y})!")
