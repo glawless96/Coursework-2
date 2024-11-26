@@ -1,77 +1,66 @@
-import pygame   # type: ignore
+import pygame
 import random
-import sys
 
-pygame.init()
+from static import MazeData, HeaderData
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Enemies")
+maze_static = MazeData()
+header_static = HeaderData()
 
-WHITE = (255, 255, 255)
+CELL_SIZE = maze_static.cell_size
 
-clock = pygame.time.Clock()
-
-ENEMY_WIDTH = 150
-ENEMY_HEIGHT = 150
-ENEMY_SPEED = 2
-
-ENEMY_IMAGES = [
-    "1_en.png",
-    "2_en.png",
-    "3_en.png",
-    "4_en.png",
-    "5_en.png",
-    "6_en.png",
-    "7_en.png"
-
-]
-
-class NumberSnatcher:
-    def __init__(self):
-        self.x = random.randint(0, SCREEN_WIDTH - ENEMY_WIDTH)
-        self.y = random.randint(0, SCREEN_HEIGHT - ENEMY_HEIGHT)
-        self.width = ENEMY_WIDTH
-        self.height = ENEMY_HEIGHT
-        self.speed_x = ENEMY_SPEED * random.choice([-1, 1])
-        self.speed_y = ENEMY_SPEED * random.choice([-1, 1])
+class Enemy:
+    def __init__(self, maze, image_path, speed):
+        #load enemy Images , animations, transform to fit
+        self.images = [pygame.image.load(image_path).convert_alpha()]  # Add more frames for animations
+        self.images = [pygame.transform.scale(img ,(CELL_SIZE,CELL_SIZE)) for img in self.images]
+        self.current_frame = 0
+        self.image = self.images[self.current_frame]
         
-        image_path = random.choice(ENEMY_IMAGES)
-        self.image = pygame.image.load(image_path).convert_alpha()
-        self.image = pygame.transform.scale(self.image, (self.width, self.height))
+        #Initilize enemy position
+        self.row, self.col = self.get_random_position(maze)
+        self.directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # Right, Down, Left, Up
+        self.current_direction = random.choice(self.directions)
+
+        # Speed properties
+        self.speed = speed  # Speed: moves every `speed` frames
+        self.move_counter = 0
+        self.maze = maze
+
+        self.offset = header_static.height
+
+    def get_random_position(self, maze):
+        while True: # Loop and place the enemy on the first path element
+            row = random.randint(0, len(maze.layout) - 1)
+            col = random.randint(0, len(maze.layout[0]) - 1)
+            if maze.layout[row][col] == 0: # place on paths
+                return row, col
+
+    def is_valid_move(self, new_row, new_col):
+        return 0 <= new_row < len(self.maze.layout) and 0 <= new_col < len(self.maze.layout[0]) and self.maze.layout[new_row][new_col] == 0
 
     def move(self):
-        self.x += self.speed_x
-        self.y += self.speed_y
+        self.move_counter += 1
+        if self.move_counter >= self.speed:
+            self.move_counter = 0  # Reset the counter
 
-        if self.x <= 0 or self.x >= SCREEN_WIDTH - self.width:
-            self.speed_x *= -1  
-        if self.y <= 0 or self.y >= SCREEN_HEIGHT - self.height:
-            self.speed_y *= -1  
+            # Attempt to move in the current direction
+            dr, dc = self.current_direction
+            new_row, new_col = self.row + dr, self.col + dc
 
-    def draw(self):
-        screen.blit(self.image, (self.x, self.y))
+            if self.is_valid_move(new_row, new_col):
+                # Continue moving in the current direction
+                self.row, self.col = new_row, new_col
+            else:
+                # Hit a wall, pick a new valid random direction
+                valid_directions = [
+                    (dr, dc) for dr, dc in self.directions 
+                    if self.is_valid_move(self.row + dr, self.col + dc)
+                ]
+                if valid_directions:
+                    self.current_direction = random.choice(valid_directions)
+                    dr, dc = self.current_direction
+                    self.row, self.col = self.row + dr, self.col + dc
 
-def game_loop():
-    enemies = [NumberSnatcher() for _ in range(3)]  
-
-    running = True
-    while running:
-        screen.fill(WHITE)  
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-
-        for enemy in enemies:
-            enemy.move()
-            enemy.draw()
-
-        pygame.display.flip()
-        clock.tick(30)  
-
-    pygame.quit()
-    sys.exit()
-
-game_loop()
+    def draw(self, screen):
+        x, y = self.col * CELL_SIZE, self.row * CELL_SIZE + self.offset
+        screen.blit(self.image, (x, y))

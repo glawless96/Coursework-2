@@ -12,7 +12,7 @@ class Enemy1(pygame.sprite.Sprite):
 
     def update(self, wall):
         original_position = self.rect.topleft
-        self.rect.x += self.velocity.x
+        self.rect.x -= self.velocity.x
         self.rect.y += self.velocity.y
 
         if pygame.sprite.spritecollide(self, wall, dokill = False):
