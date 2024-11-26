@@ -21,6 +21,7 @@ class health(pygame.sprite.Sprite):
             screen.blit(heart, (880 + space, 30))
             space += 30
 
+    
 class baseCharacterClass(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -35,8 +36,13 @@ class baseCharacterClass(pygame.sprite.Sprite):
         self.invincible = False
         self.invincibleDuration = 3
         self.invincibilityStartTime = 0
+        
+        self.hasCollided = False
+        self.hasTakenDamage = False
+        self.hasDied = False
 
     def update(self, enemies, wall):
+        self.moveRight()
         original_position = self.rect.topleft
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
@@ -57,7 +63,9 @@ class baseCharacterClass(pygame.sprite.Sprite):
             self.health.take_damage()
             self.invincible = True
             self.invincibilityStartTime = time.time()
+            self.hasCollided = True
             if len(self.health.hearts) > 0:
+                self.hasTakenDamage = True
                 self.health.hearts.pop()
 
         
@@ -86,3 +94,9 @@ class baseCharacterClass(pygame.sprite.Sprite):
 
         else:
             self.image.set_alpha(255)
+    
+    def collision(self):
+        return self.hasCollided
+    
+    def moveRight(self):
+        self.rect.x += self.speed
