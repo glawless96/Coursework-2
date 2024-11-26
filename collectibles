@@ -1,0 +1,4 @@
+from LevelMathUtil import LevelMathUtil
+
+def generate_target_number(level):
+    return LevelMathUtil.get_target_number(level)
