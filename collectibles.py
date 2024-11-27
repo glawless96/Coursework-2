@@ -1,10 +1,12 @@
 import pygame
 import random
 from static import ColorData, MazeData, HeaderData
+from LevelMathUtil import LevelMathUtil
 
 maze_static = MazeData()
 color = ColorData()
 header_static = HeaderData()
+math_utils = LevelMathUtil()
 
 CELL_SIZE = maze_static.cell_size
 
@@ -67,6 +69,7 @@ class Collectible():
             return random.randint(80, 100)
         else:
             return random.randint(10, 100)
+        # return math_utils.get_target_number(level)
         
     def get_addition_solutions_set(number):
         def helper(target, current_combination, start, results):
