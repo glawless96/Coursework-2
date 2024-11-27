@@ -45,16 +45,21 @@ class HeadUpDisplay():
         time_text = self.font.render(f"Time: {time_elapsed}s", True, color_static.white)
         screen.blit(time_text, (20, 20))
 
+        #Expression text
+        expression_heading_text = self.font.render("Resolve the challenge to reach the next level.", True, color_static.white)
+        screen.blit(expression_heading_text, (300, 20))
+
+        exp = "Get all numbers that adds up to : " + str(self.target_number)
         #target number
-        target_text = self.font.render(f"Target Number: {self.target_number}", True, color_static.white)
-        screen.blit(target_text, (300, 20))
+        target_text = self.font.render(f"{exp}", True, color_static.white)
+        screen.blit(target_text, (300, 40))
 
         #collected numbers
         collected_text = self.font.render("Collected Numbers:", True, color_static.white)
         screen.blit(collected_text, (300, 60))
         for idx, item in enumerate(self.collected_items):
-            collected_item_text = self.font.render(str(item), True, color_static.white)
-            screen.blit(collected_item_text, (400 + idx * 30, 60))  # Space out the collected items
+            collected_item_text = self.font.render(item.label, True, color_static.white)
+            screen.blit(collected_item_text, (600 + idx * 30, 60))  # Space out the collected items
 
         #health icons
         for i in range(self.health):
