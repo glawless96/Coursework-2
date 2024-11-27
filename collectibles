@@ -1,5 +1,0 @@
-from LevelMathUtil import LevelMathUtil
-
-#AC4
-def generate_target_number(level):
-    return LevelMathUtil.get_target_number(level)

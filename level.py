@@ -56,14 +56,23 @@ class Level:
         end_image = self.load_image(MAZE_END_IMAGEURL, (CELL_SIZE, CELL_SIZE))
         
         # Initialize popups
+        #game over popup
         game_over_popup = PopUp(390, 100, 500, 200, (200, 200, 200), (0, 0, 0))
         game_over_popup.set_message("Game Over! You ran out of health.")
         game_over_popup.add_button(-70, 60, 100, 40, text="Retry", text_color=(255, 255, 255), color=(0, 128, 0))
         game_over_popup.add_button(70, 60, 100, 40, text="Quit", text_color=(255, 255, 255), color=(128, 0, 0))
 
+        #Collectibles popups
         collectibles_popup = PopUp(390, 100, 500, 200, (200, 200, 200), (0, 0, 0))
         collectibles_popup.add_button(-70, 60, 100, 40, text="Collect", text_color=(255, 255, 255), color=(0, 128, 0))
         collectibles_popup.add_button(70, 60, 100, 40, text="Cancel", text_color=(255, 255, 255), color=(128, 0, 0))
+
+        #Game Complete Popups
+        game_complete_popup = PopUp(390, 100, 500, 200, (200, 200, 200), (0, 0, 0))
+        game_complete_popup.set_message("You have complete the level !!!")
+        game_complete_popup.add_button(-70, 60, 100, 40, text="Next Level", text_color=(255, 255, 255), color=(0, 128, 0))
+        game_complete_popup.add_button(70, 60, 100, 40, text="Quit", text_color=(255, 255, 255), color=(128, 0, 0))
+
 
         # Generate random target number
         target_number = Collectible.generate_target_number(self.level)
@@ -94,8 +103,9 @@ class Level:
         collectibles_popup_shown = False
         seen_collectibles = set()
         game_pause = False
+        game_complete_shown = False
 
-                # Track player's last position and popup state
+        # Track player's last position and popup state
         last_position = None
         active_collectible = None  # Currently active collectible for the popup
 
@@ -114,12 +124,17 @@ class Level:
                                     return True
                                 elif button.text == "Quit":
                                     running = False
+                    elif game_complete_shown:
+                        for button in game_complete_popup.buttons:
+                            if button.is_clicked(mouse_pos):
+                                if button.text == "Quit":
+                                    running = False
                     elif collectibles_popup_shown:
                         for button in collectibles_popup.buttons:
                             if button.is_clicked(mouse_pos):
                                 game_pause = False
                                 if button.text == "Collect" and active_collectible:
-                                    collected_numbers.append(active_collectible.label)
+                                    collected_numbers.append(int(active_collectible.label))
                                     active_collectible.collect()  # Mark the collectible as collected
                                     generated_maze.remove_collectible_maze()
                                     seen_collectibles.add(active_collectible)  # Mark as seen and handled
@@ -151,7 +166,7 @@ class Level:
                         for item in collected_items:
                             if item not in seen_collectibles or item != active_collectible:
                                 active_collectible = item
-                                collectibles_popup.set_message(f"You collected {item.label}! Collect or Cancel?")
+                                collectibles_popup.set_message(f"You can collect {item.label}! Collect or Cancel?")
                                 collectibles_popup.show()
                                 collectibles_popup_shown = True
                                 game_pause = True
@@ -171,9 +186,15 @@ class Level:
                         game_over_popup.show()
                         game_over_shown = True
 
+                #Check if target is achieved
+                if check_target_reached(collected_numbers, hud.target_number, "+"):
+                    game_complete_popup.show()
+                    game_complete_shown = True
+
                 # Move enemies
                 for enemy in enemies:
                     enemy.move()
+            hud.update_collectiables(collected_items) 
 
             # Draw elements
             hud.draw_header(screen)
@@ -189,10 +210,16 @@ class Level:
                 mouse_pos = pygame.mouse.get_pos()
                 game_over_popup.update(mouse_pos)
                 game_over_popup.draw(screen)
+
             if collectibles_popup_shown:
                 mouse_pos = pygame.mouse.get_pos()
                 collectibles_popup.update(mouse_pos)
                 collectibles_popup.draw(screen)
+
+            if game_complete_shown:
+                mouse_pos = pygame.mouse.get_pos()
+                game_complete_popup.update(mouse_pos)
+                game_complete_popup.draw(screen)
 
             pygame.display.flip()
             clock.tick(10)
@@ -203,3 +230,9 @@ class Level:
 
 def check_enemy_collision(player, enemies):
     return any(player.row == enemy.row and player.col == enemy.col for enemy in enemies)
+
+def check_target_reached(collected_numbers, target_number, opeartion):
+    if opeartion == "+":
+        if len(collected_numbers) > 0:
+            total = sum(collected_numbers)
+            return total == target_number
