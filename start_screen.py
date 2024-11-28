@@ -69,7 +69,7 @@ def start_screen(screen):
                 for button in  buttons:
                     if button.is_clicked(event.pos):
                         if button == new_game_button:
-                            return 'level_1' #start new game
+                            return 'start_game' #start new game
                         elif button == continue_game_button:
                             return 'main_game' #show level selection
                         elif button == quit_game_button:

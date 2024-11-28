@@ -30,12 +30,11 @@ COLLECTABLE_IMAGEURL = 'data\\images\\collectables\\collectable_2.png'
 clock = pygame.time.Clock()
 
 # Global variables for collected numbers
-collected_numbers = []
-
 class Level:
     def __init__(self, current_level, number_of_enemies):
         self.level = current_level
         self.enemies = number_of_enemies
+        self.collected_numbers = []
 
     def load_image(self, path, size=None, alpha=False):
         """Load an image with optional scaling."""
@@ -81,7 +80,7 @@ class Level:
         print('Possible Solutions:', all_possible_solutions)
 
         # Add random numbers to solutions for variety
-        all_possible_solutions.extend(random.randint(1, 100) for _ in range(10))
+        all_possible_solutions.extend(random.randint(1, target_number) for _ in range(self.level))
 
         hud = HeadUpDisplay(target_number)
 
@@ -127,14 +126,17 @@ class Level:
                     elif game_complete_shown:
                         for button in game_complete_popup.buttons:
                             if button.is_clicked(mouse_pos):
-                                if button.text == "Quit":
+                                if button.text == "Next Level":
+                                    return "Next Level"
+                                    running = False
+                                elif button.text == "Quit":
                                     running = False
                     elif collectibles_popup_shown:
                         for button in collectibles_popup.buttons:
                             if button.is_clicked(mouse_pos):
                                 game_pause = False
                                 if button.text == "Collect" and active_collectible:
-                                    collected_numbers.append(int(active_collectible.label))
+                                    self.collected_numbers.append(int(active_collectible.label))
                                     active_collectible.collect()  # Mark the collectible as collected
                                     generated_maze.remove_collectible_maze()
                                     seen_collectibles.add(active_collectible)  # Mark as seen and handled
@@ -187,7 +189,7 @@ class Level:
                         game_over_shown = True
 
                 #Check if target is achieved
-                if check_target_reached(collected_numbers, hud.target_number, "+"):
+                if check_target_reached(self.collected_numbers, hud.target_number, "+"):
                     game_complete_popup.show()
                     game_complete_shown = True
 
