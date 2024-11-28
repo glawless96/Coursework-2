@@ -8,7 +8,7 @@ class Enemy1(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
     
-        self.velocity = pygame.math.Vector2(2, 0)
+        self.velocity = pygame.math.Vector2(1, 0)
 
     def update(self, wall):
         original_position = self.rect.topleft

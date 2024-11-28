@@ -20,19 +20,20 @@ current_screen = 'start_screen'
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption(GAMENAME)
-
+level = 1
+initial_enemies = 4
 while True:
     if current_screen == 'start_screen':
         current_screen = start_screen.start_screen(screen)
-    elif current_screen == 'level_1':
-        current_level = Level(1, 4)
-        current_screen = current_level.start_level(screen)
-    elif current_screen == 'level_2':
-        current_level = Level(2, 8)
-        current_screen = current_level.start_level(screen)
+        
+    if current_screen == 'start_game':
+        current_level = Level(level, initial_enemies)
+        status = current_level.start_level(screen)
+        if status == 'Next Level':
+            level = level + 1
+
     elif current_screen == 'main_game':
         current_screen = level_selection.main_game(screen)
-    else: 
-        break
+
     
 pygame.quit()

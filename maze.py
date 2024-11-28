@@ -37,7 +37,7 @@ class Maze():
         dfs(1, 1)
 
         # Add additional random paths to create more openings
-        extra_paths = (self.rows * self.cols) // 5  # Adjust this value to control the number of additional paths
+        extra_paths = (self.rows * self.cols) // 3  # Adjust this value to control the number of additional paths
         for _ in range(extra_paths):
             x = random.randint(1, self.cols - 2)
             y = random.randint(1, self.rows - 2)
@@ -61,10 +61,10 @@ class Maze():
         rows, cols = self.rows, self.cols
         for row in range(self.rows):
             for col in range(self.cols): 
-                if (col, row) == (cols - 3, rows - 3):
-                    # Draw the end image at this cell
-                    screen.blit(end_image, (col * CELL_SIZE, row * CELL_SIZE + self.offset))
-                else:
+                # if (col, row) == (cols - 3, rows - 3):
+                #     # Draw the end image at this cell
+                #     screen.blit(end_image, (col * CELL_SIZE, row * CELL_SIZE + self.offset))
+                # else:
                     # Draw wall or path based on maze structure
                     if self.layout[row][col] == 1:
                         screen.blit(wall_image, (col * CELL_SIZE, row * CELL_SIZE + self.offset))

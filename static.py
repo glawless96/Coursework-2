@@ -12,7 +12,7 @@ class CharacterData():
 
 class HealthData():
     def __init__(self):
-        self.maxHealth = 1
+        self.maxHealth = 3
         self.health_image = "data\\images\\player_character\\heart.png"
 
 class EnemyData():
@@ -27,7 +27,7 @@ class EnemyData():
 
 class MazeData():
     def __init__(self):
-        self.wall_image = "data\\images\\maze\\maze_wall.png"
+        self.wall_image = "data\\images\\maze\\maze_wall.jpeg"
         self.path_image = "data\\images\\maze\\path2.png"
         self.end_maze_image = "data\\images\\maze\\portal.png"  
         self.cell_size = 45

@@ -1,7 +1,6 @@
 import pygame
 from button import Button
 
-
 class PopUp:
     def __init__(self, x, y, width, height, bg_color=(200, 200, 200), text_color=(0, 0, 0), border_radius=15, shadow_offset=5):
         """
@@ -16,6 +15,8 @@ class PopUp:
         :param border_radius: Radius for rounded corners.
         :param shadow_offset: Offset for the shadow effect.
         """
+        pygame.font.init()
+
         self.rect = pygame.Rect(x, y, width, height)
         self.font = pygame.font.Font(None, 36)
         self.bg_color = bg_color
