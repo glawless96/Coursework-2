@@ -27,7 +27,7 @@ class EnemyData():
 
 class MazeData():
     def __init__(self):
-        self.wall_image = "data\\images\\maze\\maze_wall.jpeg"
+        self.wall_image = "data\\images\\maze\\maze_wall.png"
         self.path_image = "data\\images\\maze\\path2.png"
         self.end_maze_image = "data\\images\\maze\\portal.png"  
         self.cell_size = 45
