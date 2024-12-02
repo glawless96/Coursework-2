@@ -3,18 +3,6 @@ from button import Button
 
 class PopUp:
     def __init__(self, x, y, width, height, bg_color=(200, 200, 200), text_color=(0, 0, 0), border_radius=15, shadow_offset=5):
-        """
-        A reusable pop-up class with animations and interactive buttons.
-        :param x: X-coordinate of the top-left corner.
-        :param y: Y-coordinate of the top-left corner.
-        :param width: Width of the pop-up.
-        :param height: Height of the pop-up.
-        :param font: Pygame font for text.
-        :param bg_color: Background color of the pop-up.
-        :param text_color: Text color.
-        :param border_radius: Radius for rounded corners.
-        :param shadow_offset: Offset for the shadow effect.
-        """
         pygame.font.init()
 
         self.rect = pygame.Rect(x, y, width, height)
@@ -28,21 +16,13 @@ class PopUp:
         self.shadow_offset = shadow_offset
 
         # Animation attributes
-        self.animation_progress = 0  # Used for smooth scaling animations
+        self.animation_progress = 0.0  # Progress between 0.0 and 1.0
+        self.animation_duration = 0.5  # Duration in seconds
 
     def set_message(self, message):
-        """Set the message to display in the pop-up."""
         self.message = message
 
     def add_button(self, x_offset, y_offset, width, height, **kwargs):
-        """
-        Add a button to the pop-up.
-        :param x_offset: X-offset relative to the pop-up's center.
-        :param y_offset: Y-offset relative to the pop-up's center.
-        :param width: Width of the button.
-        :param height: Height of the button.
-        :param kwargs: Additional arguments for the Button class (e.g., text, color, etc.).
-        """
         button_x = self.rect.centerx + x_offset - width // 2
         button_y = self.rect.centery + y_offset - height // 2
         button = Button(button_x, button_y, width, height, **kwargs)
@@ -50,18 +30,21 @@ class PopUp:
 
     def show(self):
         self.visible = True
-        self.animation_progress = 0  # Reset animation progress when shown
+        self.animation_progress = 0.0  # Reset animation progress
 
     def hide(self):
         self.visible = False
 
-    def update(self, mouse_pos):
+    def update(self, mouse_pos, delta_time):
         if self.visible:
+            # Smoothly update popup animation
+            self.animation_progress = min(self.animation_progress + delta_time / self.animation_duration, 1.0)
+            
+            # Update buttons independently
             for button in self.buttons:
                 button.update_hover(mouse_pos)
 
     def draw(self, screen):
-        """Render the pop-up on the screen."""
         if not self.visible:
             return
 
@@ -70,7 +53,7 @@ class PopUp:
         pygame.draw.rect(screen, (50, 50, 50), shadow_rect, border_radius=self.border_radius)
 
         # Smooth scaling animation
-        scale = min(1.0, self.animation_progress / 10)
+        scale = self.animation_progress
         animated_rect = self.rect.inflate(
             -int(self.rect.width * (1 - scale)), -int(self.rect.height * (1 - scale))
         )
@@ -90,7 +73,3 @@ class PopUp:
         # Draw the buttons
         for button in self.buttons:
             button.draw(screen)
-
-        # Update animation progress
-        if self.animation_progress < 10:
-            self.animation_progress += 1

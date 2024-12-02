@@ -1,39 +1,38 @@
-#import lib = python, sys 
 import pygame
-import sys
-
-from static import ScreenData
+from start_screen import start_screen
+from level_selection import main_game
 from level import Level
+from static import ScreenData
 
-import start_screen
-import level_selection
+# Game constants
+GAMENAME = "Coursework 2 Demo Game"
 
-#Set the name for the window
-GAMENAME = 'Coursework 2 Demo Game'
+# Screen dimensions
+screen_data = ScreenData()
+WIDTH, HEIGHT = screen_data.width, screen_data.height
 
-# Screen dimensions and setup
-screen = ScreenData()
-WIDTH , HEIGHT = screen.width, screen.height
-
-current_screen = 'start_screen'
-# Initialize Pygame and set up the screen
+# Initialize Pygame and screen
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption(GAMENAME)
+
+# Game state
+current_screen = "start_screen"
 level = 1
 initial_enemies = 4
+
+# Main game loop
 while True:
-    if current_screen == 'start_screen':
-        current_screen = start_screen.start_screen(screen)
-        
-    if current_screen == 'start_game':
+    if current_screen == "start_screen":
+        current_screen = start_screen(screen)
+
+    elif current_screen == "start_game":
         current_level = Level(level, initial_enemies)
         status = current_level.start_level(screen)
-        if status == 'Next Level':
-            level = level + 1
+        if status == "Next Level":
+            level += 1
 
-    elif current_screen == 'main_game':
-        current_screen = level_selection.main_game(screen)
+    elif current_screen == "main_game":
+        current_screen = main_game(screen)
 
-    
 pygame.quit()

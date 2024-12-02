@@ -33,7 +33,7 @@ class Player:
 
     def start_blipping(self):
         self.is_blipping = True
-        self.blip_timer = 30  # Blip for 30 frames
+        self.blip_timer = 10  # Blip for 30 frames
 
     def draw_health(self, screen):
         for i in range(self.health):

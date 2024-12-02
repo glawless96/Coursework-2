@@ -74,12 +74,12 @@ class Button:
             # Increase alpha for fade-in effect
             self.current_alpha = min(255, self.current_alpha + self.animation_speed)
             # Scale the button for animation
-            self.current_scale = min(1.2, self.current_scale + 0.01)
+            self.current_scale = min(1.1, self.current_scale + 0.05)  # Adjusted for responsiveness
         else:
             # Decrease alpha for fade-out effect
             self.current_alpha = max(self.alpha, self.current_alpha - self.animation_speed)
             # Reset scale when not hovered
-            self.current_scale = max(1.0, self.current_scale - 0.01)
+            self.current_scale = max(1.0, self.current_scale - 0.05)
 
         # Update the width and height based on scale
         self.width = int(self.original_width * self.current_scale)
