@@ -21,6 +21,8 @@ class HeadUpDisplay():
             pygame.transform.scale(pygame.image.load(health_static.health_image), self.health_icon_size)
             for _ in range(self.health)
         ]
+    def update_target(self, target_number):
+        self.target_number = target_number
     
     def update_collectiables(self, collected_items):
         self.collected_items = collected_items 
@@ -45,14 +47,10 @@ class HeadUpDisplay():
         time_text = self.font.render(f"Time: {time_elapsed}s", True, color_static.white)
         screen.blit(time_text, (20, 20))
 
-        #Expression text
-        expression_heading_text = self.font.render("Resolve the challenge to reach the next level.", True, color_static.white)
-        screen.blit(expression_heading_text, (300, 20))
-
         exp = "Get all numbers that adds up to : " + str(self.target_number)
         #target number
         target_text = self.font.render(f"{exp}", True, color_static.white)
-        screen.blit(target_text, (300, 40))
+        screen.blit(target_text, (300, 30))
 
         #collected numbers
         collected_text = self.font.render("Collected Numbers:", True, color_static.white)
