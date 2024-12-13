@@ -3,7 +3,6 @@ import pygame
 
 from static import MazeData, HeaderData
 from collectibles import Collectible
-from popup import PopUp
 
 maze_static = MazeData()
 header_static = HeaderData()
@@ -46,31 +45,61 @@ class Maze():
 
         return maze
 
-    def place_collectibles(self, num_collectibles, collectible_image,  animation_paths, labels):
+    def place_collectibles(self, num_collectibles, collectible_image, animation_paths, labels):
         self.collectibles.clear()
+        occupied_positions = set()  # Track occupied positions
+
         for i in range(num_collectibles):
             while True:
                 r = random.randint(1, self.rows - 2)
                 c = random.randint(1, self.cols - 2)
-                if self.layout[r][c] == 0:  # Only place on a path
-                    collectible = Collectible(c * CELL_SIZE, r * CELL_SIZE , [collectible_image],  animation_paths, str(labels[i]))
+                position = (r, c)
+
+                if self.layout[r][c] == 0 and position not in occupied_positions:  # Ensure no overlap
+                    collectible = Collectible(
+                        c * CELL_SIZE, r * CELL_SIZE, [collectible_image], animation_paths, str(labels[i])
+                    )
                     self.collectibles.append(collectible)
+                    occupied_positions.add(position)  # Mark position as occupied
                     break
+
     
-    def draw_maze(self, screen, wall_image, path_image, end_image):
+    # def draw_maze(self, screen, wall_image, path_image, end_image):
+    #     rows, cols = self.rows, self.cols
+    #     for row in range(self.rows):
+    #         for col in range(self.cols): 
+    #             if self.layout[row][col] == 1:
+    #                 screen.blit(wall_image, (col * CELL_SIZE, row * CELL_SIZE + self.offset))
+    #             else:
+    #                 screen.blit(path_image, (col * CELL_SIZE, row * CELL_SIZE + self.offset))
+    def draw_maze(self, screen, top_wall_image, left_wall_image, right_wall_image, bottom_wall_image, top_left_corner_image, top_right_corner_image, bottom_left_corner_image, bottom_right_corner_image, inner_wall_image, path_image):
         rows, cols = self.rows, self.cols
-        for row in range(self.rows):
-            for col in range(self.cols): 
-                # if (col, row) == (cols - 3, rows - 3):
-                #     # Draw the end image at this cell
-                #     screen.blit(end_image, (col * CELL_SIZE, row * CELL_SIZE + self.offset))
-                # else:
-                    # Draw wall or path based on maze structure
-                    if self.layout[row][col] == 1:
-                        screen.blit(wall_image, (col * CELL_SIZE, row * CELL_SIZE + self.offset))
-                    else:
-                        screen.blit(path_image, (col * CELL_SIZE, row * CELL_SIZE + self.offset))
-        
+        for row in range(rows):
+            for col in range(cols):
+                if self.layout[row][col] == 1:  # If it's a wall
+                    # Determine the position of the wall
+                    if row == 0 and col == 0:  # Top-left corner
+                        screen.blit(top_left_corner_image, (col * CELL_SIZE, row * CELL_SIZE + self.offset))
+                    elif row == 0 and col == cols - 1:  # Top-right corner
+                        screen.blit(top_right_corner_image, (col * CELL_SIZE, row * CELL_SIZE + self.offset))
+                    elif row == rows - 1 and col == 0:  # Bottom-left corner
+                        screen.blit(bottom_left_corner_image, (col * CELL_SIZE, row * CELL_SIZE + self.offset))
+                    elif row == rows - 1 and col == cols - 1:  # Bottom-right corner
+                        screen.blit(bottom_right_corner_image, (col * CELL_SIZE, row * CELL_SIZE + self.offset))
+                    elif row == 0:  # Top wall
+                        screen.blit(top_wall_image, (col * CELL_SIZE, row * CELL_SIZE + self.offset))
+                    elif row == rows - 1:  # Bottom wall
+                        screen.blit(bottom_wall_image, (col * CELL_SIZE, row * CELL_SIZE + self.offset))
+                    elif col == 0:  # Left wall
+                        screen.blit(left_wall_image, (col * CELL_SIZE, row * CELL_SIZE + self.offset))
+                    elif col == cols - 1:  # Right wall
+                        screen.blit(right_wall_image, (col * CELL_SIZE, row * CELL_SIZE + self.offset))
+                    else:  # Inner walls
+                        screen.blit(inner_wall_image, (col * CELL_SIZE, row * CELL_SIZE + self.offset))
+                else:
+                    # Draw the path image
+                    screen.blit(path_image, (col * CELL_SIZE, row * CELL_SIZE + self.offset))
+    
 
     def check_collectibles_collision(self, player):
         collected_items = []
