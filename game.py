@@ -20,6 +20,15 @@ pygame.display.set_caption(GAMENAME)
 current_screen = "start_screen"
 level = 1
 initial_enemies = 4
+<<<<<<< Updated upstream
+=======
+time_limit = 360 
+
+pygame.mixer.init()
+pygame.mixer.music.load('data\\music\\start_level.wav')
+pygame.mixer.music.set_volume(0)
+pygame.mixer.music.play()
+>>>>>>> Stashed changes
 
 # Main game loop
 while True:
