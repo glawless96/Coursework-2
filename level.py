@@ -9,7 +9,7 @@ from head_up_display import HeadUpDisplay
 from level_math_util import LevelMathUtil
 from help_text import HelpTexts
 from popup import PopUp
-from operation_animation_manager import AnimationManager
+from game_utilities import log_operation, update_operation
 
 # Static configurations
 static_maze = MazeData()
@@ -60,7 +60,7 @@ class Level:
             print(f"Error loading image at {path}: {e}")
             return None
 
-    def start_level(self, screen):
+    def start_level(self, screen, user):
 
         # Generate random target number
         self.operator = math_utils.set_math_operator(self.level, self.difficulty) if self.operator is None else "+"
@@ -68,16 +68,11 @@ class Level:
         self.possible_solutions =  math_utils.get_all_possible_solutions(self.target_number, self.operator)
         self.start_game_help_text = HelpTexts(self.operator, self.target_number, self.level, self.difficulty)
         all_possible_solutions = self.possible_solutions
-        print('Maths operations: ',self.operator)
-        print('Target Number:', self.target_number)
-        print('Possible Solutions:', all_possible_solutions)
 
-        # Load images with proper error handling
-        # wall_image = self.load_image(MAZE_WALL_IMAGEURL, (CELL_SIZE, CELL_SIZE), alpha=True) 
+        game_log_row = log_operation(user.id, self.operator, self.game_question, self.difficulty, self.level, False)
+
         path_image = self.load_image(MAZE_PATH_IMAGEURL, (CELL_SIZE, CELL_SIZE), alpha=True)
         inner_wall = self.load_image(static_maze.inner_wall, (CELL_SIZE, CELL_SIZE), alpha=True)
-        player_image = self.load_image(PLAYER_IMAGEURL, (CELL_SIZE, CELL_SIZE), alpha=True)
-        # end_image = self.load_image(MAZE_END_IMAGEURL, (CELL_SIZE, CELL_SIZE))
         
         top_wall = self.load_image(static_maze.top_wall, (CELL_SIZE, CELL_SIZE), alpha=True)
         top_right_wall = self.load_image(static_maze.top_right_wall, (CELL_SIZE, CELL_SIZE), alpha=True)
@@ -91,33 +86,30 @@ class Level:
         # Initialize popups
 
         # Question popup / Start Game screen
-        game_question_popup = PopUp(390, 100, 500, 420, (200, 200, 200), color.white)
+        game_question_popup = PopUp(390, 100, 500, 600, (200, 200, 200), color.white)
         game_question_popup.set_title("Start Game", font_size=40, font_style="bold", color=(0,0,255))
         game_question_popup.set_message(f'Level : {self.level}', font_size=30, align="center", x=-70 )
         game_question_popup.set_message(f'Difficulty : {self.difficulty} / 20', font_size=30, align="center", x=70)
-        game_question_popup.set_message( self.game_question + str(self.target_number), font_size=30, align="center", spacing=60)
-        game_question_popup.set_message( self.start_game_help_text.helptext.title, border_group="group1", font_size=40, align="center", spacing=60, border_color=color.white, border_width=3, padding=20)
+        game_question_popup.set_message( self.game_question + str(self.target_number), font_size=30, align="center", spacing=50)
+        game_question_popup.set_message( self.start_game_help_text.helptext.title, border_group="group1", font_size=40, align="center", spacing=30, border_color=color.white, border_width=3, padding=20)
         for helptext in self.start_game_help_text.helptext.messages:
             game_question_popup.set_message(helptext, align="center", border_group="group1", font_size=30, color=color.white, spacing=30, border_color=color.white, border_width=3, padding=20)
-
-        game_question_popup.add_button(-70, 170, 100, 40, shape='rect', color=(40, 209, 90), text="Start",
+        game_question_popup.add_button(-70, 200, 100, 40, shape='rect', color=(40, 209, 90), text="Start",
                                        hover_color=(38 , 199, 85), text_color=(255, 255, 255), font_size=36, alpha=170, border_radius=10)
-        game_question_popup.add_button(70, 170, 100, 40, shape='rect', color=(255, 5, 21), text="Quit",
+        game_question_popup.add_button(70, 200, 100, 40, shape='rect', color=(255, 5, 21), text="Quit",
                                        hover_color=(209 , 4, 14), text_color=(255, 255, 255), font_size=36, alpha=170, border_radius=10)
         game_question_popup.show()
 
 
         #Help Screen popup
-        help_popup = PopUp(390, 100, 500, 420, (200, 200, 200), color.white)
+        help_popup = PopUp(390, 100, 500, 600, (200, 200, 200), color.white)
         help_popup.set_title("Help", font_size=40, font_style="bold", color=(0,0,255))
 
         help_popup.set_message( self.start_game_help_text.helptext.title, font_size=40, border_group="group1", align="center", spacing=60, border_color=color.white, border_width=3, padding=20)
         for helptext in self.start_game_help_text.helptext.messages:
             help_popup.set_message(helptext, align="center", font_size=30, color=color.white, border_group="group1", spacing=30, border_color=color.white, border_width=4, padding=20)
 
-        help_popup.set_message(get_solution(self.operator, self.collected_numbers, self.target_number, all_possible_solutions), align="center", font_size=30, spacing = 60)
-
-        help_popup.add_button(0, 170, 100, 40, shape='rect', color=(255, 5, 21), text="Close",
+        help_popup.add_button(0, 190, 100, 40, shape='rect', color=(255, 5, 21), text="Close",
                                        hover_color=(209 , 4, 14), text_color=(255, 255, 255), font_size=36, alpha=170, border_radius=10)
         help_popup.show()
 
@@ -175,9 +167,8 @@ class Level:
         game_question_popup_shown = True
         game_help_popup_shown = False
 
-        # Track player's last position and popup state
         last_position = None
-        active_collectible = None  # Currently active collectible for the popup
+        active_collectible = None  
 
         start_time = pygame.time.get_ticks()
 
@@ -186,7 +177,7 @@ class Level:
             screen.fill(color.black)
 
             if not game_pause:
-                elapsed_time = (pygame.time.get_ticks() - start_time) // 1000  # Elapsed time in seconds
+                elapsed_time = (pygame.time.get_ticks() - start_time) // 1000  
                 hud.update_remainig_time(self.time_limit - elapsed_time)
             else:
                 elapsed_time = 0
@@ -200,7 +191,7 @@ class Level:
                 elif len(self.collected_numbers) == 1:
                     game_over_popup.set_message("You failed to get correct answer.", font_size=40, align="center", spacing=40)
                     game_over_popup.set_message("Correct answer would be :", font_size=30, align="center")
-                    game_over_popup.set_message(get_solution(self.operator, self.collected_numbers, self.target_number, all_possible_solutions), font_size=30, align="center", spacing=50)
+                    game_over_popup.set_message(self.get_solution(all_possible_solutions), font_size=30, align="center", spacing=50)
 
                 game_over_popup.show()
                 game_over_shown = True
@@ -215,6 +206,16 @@ class Level:
                     game_pause = not game_pause
                     print('game_paused ',game_pause)
                 elif hud_action == "help":
+                    if len(self.collected_numbers) == 1:
+                        player.handle_collision(screen)
+                        hud.update_health(player.health)
+                    help_popup.reset_messages()
+                    help_popup.set_message( self.start_game_help_text.helptext.title, font_size=40, border_group="group1", align="center", spacing=60, border_color=color.white, border_width=3, padding=20)
+                    for helptext in self.start_game_help_text.helptext.messages:
+                        help_popup.set_message(helptext, align="center", font_size=30, color=color.white, border_group="group1", spacing=30, border_color=color.white, border_width=4, padding=20)
+                    
+                    help_popup.set_message("Answer might be: ", align="center", font_size=30, spacing = 60)
+                    help_popup.set_message(self.get_solution(all_possible_solutions), align="center", font_size=40, spacing = 60)
                     game_help_popup_shown = not game_help_popup_shown
                     print("show help popup") 
 
@@ -256,15 +257,14 @@ class Level:
                                 game_pause = False
                                 if button.text == "Collect" and active_collectible:
                                     self.collected_numbers.append(int(active_collectible.label))
-                                    active_collectible.collect()  # Mark the collectible as collected
+                                    active_collectible.collect()  
                                     generated_maze.remove_collectible_maze()
-                                    seen_collectibles.add(active_collectible)  # Mark as seen and handled
-
+                                    seen_collectibles.add(active_collectible)  
                                     collectibles_popup_shown = False
-                                    active_collectible = None  # Reset active collectible
+                                    active_collectible = None  
                                 elif button.text == "Cancel":
                                     collectibles_popup_shown = False
-                                    active_collectible = None  # Reset active collectible
+                                    active_collectible = None  
                                 break
 
             if not game_pause:
@@ -280,7 +280,7 @@ class Level:
 
                 # Check for collectible collision
                 current_position = (player.row, player.col)
-                if current_position != last_position:  # Player moved
+                if current_position != last_position:  
                     collected_items = generated_maze.check_collectibles_collision(player)
 
                     # Handle collectible popup logic
@@ -288,7 +288,7 @@ class Level:
                         for item in collected_items:
                             if item not in seen_collectibles or item != active_collectible:
                                 active_collectible = item
-                                collectibles_popup.reset_messages()  #resetting array.may contains old collectiables messages
+                                collectibles_popup.reset_messages()  
                                 collectibles_popup.set_title("Collect Number ?")
                                 collectibles_popup.set_message(f"You can collect {item.label}!")
                                 collectibles_popup.show()
@@ -296,11 +296,10 @@ class Level:
                                 game_pause = True
                                 break
 
-                    # Reset collectible state if player left the current collectible
                     if not collected_items:
                         active_collectible = None
 
-                    last_position = current_position  # Update last position
+                    last_position = current_position 
 
                 # Player-Enemy Collision
                 if check_enemy_collision(player, enemies):
@@ -318,13 +317,14 @@ class Level:
                 # Check if target is achieved
                 if check_target_reached(self.collected_numbers, hud.target_number, self.operator) == True:
                     game_complete_popup.show()
+                    update_operation(game_log_row, True)
                     game_complete_shown = True
                     game_pause = True
                 elif check_target_reached(self.collected_numbers, hud.target_number, self.operator) == False and len(self.collected_numbers) == 2:
                     game_over_popup.set_message("You failed to answer the question correctly.", font_size=30, align="center")
                     game_over_popup.set_message("You picked the wrong numbers", font_size=30, align="center")
                     game_over_popup.set_message("Correct answer would be :", font_size=30, align="center")
-                    game_over_popup.set_message(get_solution(self.operator, self.collected_numbers, self.target_number, all_possible_solutions))
+                    game_over_popup.set_message(self.get_solution(all_possible_solutions))
                     game_over_popup.set_message("Please click 'Retry' to try again or", font_size=30, align="center",spacing=50)
                     game_over_popup.set_message("'Quit' to quit the game", font_size=30, align="center")
                     game_over_popup.show()
@@ -344,7 +344,7 @@ class Level:
             generated_maze.draw_maze(screen, top_wall, left_wall, right_wall, bottom_wall, top_left_wall, top_right_wall, bottom_left_wall, bottom_right_wall, inner_wall, path_image)
             player.draw(screen)
             for collectible in generated_maze.collectibles:
-                collectible.update()  # Update particle system
+                collectible.update() 
                 collectible.draw(screen)
             for enemy in enemies:
                 enemy.draw(screen)
@@ -353,35 +353,105 @@ class Level:
             if game_over_shown:
                 mouse_pos = pygame.mouse.get_pos()
                 game_over_popup.update(mouse_pos, delta_time)
-                game_over_popup.draw(screen)
+                game_over_popup.draw(screen, delta_time)
 
             if collectibles_popup_shown:
                 mouse_pos = pygame.mouse.get_pos()
                 collectibles_popup.update(mouse_pos, delta_time)
-                collectibles_popup.draw(screen)
+                collectibles_popup.draw(screen, delta_time )
 
             if game_complete_shown:
                 mouse_pos = pygame.mouse.get_pos()
                 game_complete_popup.update(mouse_pos, delta_time)
-                game_complete_popup.draw(screen)
+                game_complete_popup.draw(screen, delta_time)
             
             if game_question_popup_shown:
                 mouse_pos = pygame.mouse.get_pos()
                 game_question_popup.update(mouse_pos, delta_time)
-                game_question_popup.draw(screen)
-                game_question_popup.play_animation("addition", 0, 0, 500, 100)
+                game_question_popup.draw(screen, delta_time)
+                game_question_popup.start_animation(self.operator, 390, 400, 500, 200)
 
                
             if game_help_popup_shown:
                 mouse_pos = pygame.mouse.get_pos()
                 help_popup.update(mouse_pos, delta_time)
-                help_popup.draw(screen)
+                help_popup.draw(screen, delta_time)
+                help_popup.start_animation(self.operator, 390, 400, 500, 200)
+
 
 
             pygame.display.flip()
 
         pygame.quit()
         return False
+    
+    def get_solution(self, all_possible_solutions):
+        len_collected_numbers = len(self.collected_numbers)
+        print(len_collected_numbers)
+
+        expression = ''
+        if len_collected_numbers == 0:
+            if self.operator == "+":
+                expression = "Please collect two numbers whose sum is "+str(self.target_number)
+            elif self.operator == "-":
+                expression = "Please collect two numbers whose difference is "+str(self.target_number)
+            elif self.operator == "*":
+                expression = "Please collect two numbers whose product is "+str(self.target_number)
+            elif self.operator == "/": 
+                expression = "Please collect two numbers whose division is "+str(self.target_number)
+        
+        if len_collected_numbers == 1:
+            if self.operator == "+":
+                a = self.collected_numbers[0]
+                for i in all_possible_solutions:
+                    if i == self.target_number - a and not i == a:
+                        print('i ',i, ' a ',a)
+                        expression = f' {a} + {i} = {self.target_number}' 
+            elif self.operator == "-":
+                a = self.collected_numbers[0]
+                for i in all_possible_solutions:
+                    if i == self.target_number - a and not i == a:
+                        if( i > a):
+                            expression = f' {i} - {a} = {self.target_number}' 
+                        else:
+                            expression = f' {a} - {i} = {self.target_number}' 
+            elif self.operator == "*":
+                a = self.collected_numbers[0]
+                for i in all_possible_solutions:
+                    if i == self.target_number // a and not i == a:
+                        expression = f' {a} * {i} = {self.target_number}'
+            elif self.operator == "/": 
+                a = self.collected_numbers[0]
+                for i in all_possible_solutions:
+                    if i == self.target_number * a and not i == a:
+                        expression = f' {a} / {i} = {self.target_number}'
+        
+        if len_collected_numbers == 2:
+            solutions = []
+            expressions = []
+            if self.operator == "+":
+                for i in range(self.target_number + 1):
+                    result = self.target_number - i
+                    solutions.append((result, i))
+            elif self.operator == "-":
+                for i in range(1, self.target_number + 10):
+                    result = self.target_number - i
+                    solutions.append((result, i))
+            elif self.operator == "*":
+                for i in range(1, int(self.target_number**0.5) + 1):
+                    if self.target_number % i == 0:
+                        solutions.append((self.target_number // i, i))
+            elif self.operator == "/": 
+                for i in range(1, self.target_number + 1):
+                    if self.target_number % i == 0:
+                        solutions.append((self.target_number / i, i))
+
+            for sol in solutions:
+                if sol[0] in self.collected_numbers or sol[1] in self.collected_numbers:
+                    expression = f'{sol[0]} {self.operator} {sol[1]} = {self.target_number}'
+                else:
+                    expression = f'{sol[0]} {self.operator} {sol[1]} = {self.target_number}'
+        return expression
 
 def check_enemy_collision(player, enemies):
     return any(player.row == enemy.row and player.col == enemy.col for enemy in enemies)
@@ -437,68 +507,3 @@ def game_over_help_text(timeout, zero_health):
         helptextmessage.append("You were killed by the monsters.")
         helptextmessage.append("While collecting the numbers please try to avoide the monsters.")
     return helptextmessage
-
-def get_solution(operator, collected_numbers, target_number, all_possible_solutions):
-    len_collected_numbers = len(collected_numbers)
-    expression = ''
-    if len_collected_numbers == 0:
-        if operator == "+":
-            expression = "Please collect two numbers whose sum is "+str(target_number)
-        elif operator == "-":
-            expression = "Please collect two numbers whose difference is "+str(target_number)
-        elif operator == "*":
-            expression = "Please collect two numbers whose product is "+str(target_number)
-        elif operator == "/": 
-            expression = "Please collect two numbers whose division is "+str(target_number)
-    
-    if len_collected_numbers == 1:
-        if operator == "+":
-            a = collected_numbers[0]
-            for i in collected_numbers:
-                if i == target_number - a and not i == a:
-                    expression = f' {a} + {i} = {target_number}' 
-        elif operator == "-":
-            a = collected_numbers[0]
-            for i in collected_numbers:
-                if i == target_number - a and not i == a:
-                    if( i > a):
-                        expression = f' {i} - {a} = {target_number}' 
-                    else:
-                        expression = f' {a} - {i} = {target_number}' 
-        elif operator == "*":
-            a = collected_numbers[0]
-            for i in collected_numbers:
-                if i == target_number // a and not i == a:
-                    expression = f' {a} * {i} = {target_number}'
-        elif operator == "/": 
-            a = collected_numbers[0]
-            for i in collected_numbers:
-                if i == target_number * a and not i == a:
-                    expression = f' {a} / {i} = {target_number}'
-    
-    if len_collected_numbers == 2:
-        solutions = []
-        expressions = []
-        if operator == "+":
-            for i in range(target_number + 1):
-                result = target_number - i
-                solutions.append((result, i))
-        elif operator == "-":
-            for i in range(1, target_number + 10):
-                result = target_number - i
-                solutions.append((result, i))
-        elif operator == "*":
-            for i in range(1, int(target_number**0.5) + 1):
-                if target_number % i == 0:
-                    solutions.append((target_number // i, i))
-        elif operator == "/": 
-            for i in range(1, target_number + 1):
-                if target_number % i == 0:
-                    solutions.append((target_number / i, i))
-
-        for sol in solutions:
-            if sol[0] in collected_numbers or sol[1] in collected_numbers:
-                expression = f'{sol[0]} {operator} {sol[1]} = {target_number}'
-            else:
-                expression = f'{sol[0]} {operator} {sol[1]} = {target_number}'
-    return expression

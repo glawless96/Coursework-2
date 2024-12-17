@@ -51,8 +51,6 @@ def get_division_help_text():
     return helptext
     
 
-
-
 class HelpText:
     def __init__(self, title, messages, examples):
         self.title = title

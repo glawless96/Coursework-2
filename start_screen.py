@@ -6,6 +6,7 @@ import sys
 from button import Button
 from static import ScreenData, StartScreenData, ColorData
 from login_popup import LoginPopup
+from game_utilities import get_operations_by_user
 
 #Setting rgb colors
 color = ColorData()
@@ -27,17 +28,14 @@ button_font = pygame.font.Font(None, 50)
 
 STARTSCREEN_Image = start_screen_static.background_image
  
-def start_screen(screen):
-    user = {}
+def start_screen(screen, user):
 
-    #load background image
     start_bgImage = pygame.image.load(STARTSCREEN_Image)
     start_bgImage = pygame.transform.scale(start_bgImage, (WIDTH, HEIGHT))
     
     title_text = title_font.render("", True, color.white)
     title_rect = title_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 100))
 
-    # after hover (199, 193, 110)
     new_game_button = Button(100, 100, 200, 50, shape = 'rect', color = (254, 247, 140), text = NEWGAME_BUTTONLABEL,
                     hover_color=(245, 238, 135), text_color = (0, 0, 0), font_size = 36, alpha = 170, border_radius = 10)
     continue_game_button = Button(100, 160, 200, 50, shape='rect', color = (254, 247, 140), text = CONTINUE_BUTTONLABEL,
@@ -47,16 +45,16 @@ def start_screen(screen):
 
     login_game_button = Button(100, 430, 200, 50, shape = 'rect', color = (254, 247, 140), text = "Login",
                 hover_color=(245, 238, 135), text_color = (0, 0, 0), font_size = 36, alpha = 170, border_radius = 10)
-
-    buttons = [new_game_button, continue_game_button, quit_game_button, login_game_button]
+    if user.username != None:
+        buttons = [new_game_button, continue_game_button, quit_game_button]
+    else:
+        buttons = [new_game_button, continue_game_button, quit_game_button, login_game_button]
 
     running = True
-    login_popup_instance = None  # Track if login popup is open
-
-    # Create a translucent rectangle surface
-    overlay_rect = pygame.Surface((300, 620))  # Adjust size for buttons
-    overlay_rect.set_alpha(170)  # Set transparency
-    overlay_rect.fill((50, 50, 50))  # Dark gray color
+    login_popup_instance = None  
+    overlay_rect = pygame.Surface((300, 620))  
+    overlay_rect.set_alpha(170)  
+    overlay_rect.fill((50, 50, 50)) 
 
     howtoplay_rect = pygame.Surface(( 500 ,235)) 
     howtoplay_rect.set_alpha(170)
@@ -67,12 +65,12 @@ def start_screen(screen):
     feedback_rect.fill((50, 50, 50))
 
     while running:
-        screen.fill(color.black)  # Set background color
-        screen.blit(start_bgImage, (0, 0))  # Draw background
+        screen.fill(color.black) 
+        screen.blit(start_bgImage, (0, 0))  
         screen.blit(title_text, title_rect)
 
-        screen.blit(overlay_rect, (50, 50))  # Center overlay
-        screen.blit(howtoplay_rect, (730, 50))  # Right panel
+        screen.blit(overlay_rect, (50, 50))  
+        screen.blit(howtoplay_rect, (730, 50))  
 
         stat_font = pygame.font.Font(None, 36)
 
@@ -91,21 +89,17 @@ def start_screen(screen):
             screen.blit(stat_text, (780, y_offset))
             y_offset += 40
 
-        user = {
-            "level": 1,
-            'right_answers' : 10,
-            'wrong_answers': 2,
-            'total_questions': 12
-        }
-        if user:
-            screen.blit(feedback_rect, (730, 355))  # Right panel
-            feedback_stats = [ f"Level: {user['level']}",
-                               f"Right Answers: {user['right_answers']}",
-                               f"Wrong Answers: {user['wrong_answers']}",
-                               f"Total Questions: {user['total_questions']}"
+        if user.username != None:
+            screen.blit(feedback_rect, (730, 355))
+            feedback_stats = [ 
+                               f"Current Level: {user.level}",
+                               f"Current Difficulty: {user.difficulty}",
+                               f"Right Answers: {user.right_question}",
+                               f"Wrong Answers: {user.wrong_question}",
+                               f"Total Questions: {user.total_question}"
                             ]
             y_offset = 365
-            user_name_header = stat_font.render("Welcome Test User", True, color.white)
+            user_name_header = stat_font.render(f"Welcome {user.username} ", True, color.white)
             screen.blit(user_name_header, (780, y_offset))
             y_offset += 60
             for stat in feedback_stats:
@@ -127,38 +121,38 @@ def start_screen(screen):
                 running = False
             elif login_popup_instance:
                 # If popup is open, pass events to the popup
-                action = login_popup_instance.handle_event(event)
-                if action == "login":
-                    print("Login successful!")
-                    login_popup_instance = None  # Close popup
-                    return "start_screen"
-                elif action == "register":
-                    print("Navigating to registration page...")
-                    login_popup_instance = None  # Close popup
-                    return "start_screen"
-                elif action == "cancel":
-                    print("Login cancelled.")
-                    login_popup_instance = None  # Close popup
-                    return "start_screen"
+                login_details = login_popup_instance.handle_event(event)
+                if login_details :
+                    action = login_details['action']
+                    current_user = login_details['user']
+                    if action == "login":
+                        login_popup_instance = None 
+                        return  {"current_screen": "start_screen", "current_user": current_user}
+                    elif action == "register":
+                        login_popup_instance = None  
+                        return  {"current_screen": "start_screen", "current_user": current_user}
+
+                    elif action == "cancel":
+                        login_popup_instance = None
+                        return  {"current_screen": "start_screen", "current_user": current_user}
             else:
                 # Handle button clicks when no popup is open
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     for button in buttons:
                         if button.is_clicked(event.pos):
-                            if button == new_game_button:
-                                return 'start_game'  # Start new game
+                            if button == new_game_button: 
+                                return {"current_screen": "start_game", "current_user": user} 
                             elif button == continue_game_button:
-                                return 'main_game'  # Show level selection
+                                return {"current_screen": "continue_game", "current_user": user} 
                             elif button == quit_game_button:
-                                running = False  # Quit game
+                                running = False 
                             elif button == login_game_button:
-                                # Open login popup
                                 login_popup_instance = LoginPopup(screen)
 
         # If login popup is active, draw it
         if login_popup_instance:
-            login_popup_instance.update(mouse_pos)  # Update hover states for buttons
-            login_popup_instance.draw()  # Draw popup on the screen
+            login_popup_instance.update(mouse_pos)  
+            login_popup_instance.draw() 
 
-        pygame.display.flip()  # Update display
+        pygame.display.flip()
     pygame.quit()
