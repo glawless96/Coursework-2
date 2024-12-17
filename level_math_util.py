@@ -1,23 +1,33 @@
 import random
 
 class LevelMathUtil:
-    # def __init__(self, level, difficulty):
-    #     self.target_number = self.get_target_number(level, difficulty) 
-           
-    #AC2
     def get_target_number(self, level, difficulty):
-        number_range = {
-            1: {1: (2, 3), 2: (3, 4), 3: (5, 6), 4: (6, 7), 5: (7, 9), 6: (9, 11), 7: (11, 13), 8: (13, 15), 9: (15, 17), 10: (17, 20)}, # 0 - 20
-            2: {1: (10, 13), 2: (13, 15), 3: (15, 20), 4: (20, 25), 5: (25, 30)},
-            3: {1: (30, 33), 2: (33, 35), 3: (35, 40), 4: (40, 45), 5: (45, 50)},
-            4: {1: (50, 53), 2: (53, 55), 3: (55, 60), 4: (60, 70), 5: (70, 80)},
-            5: {1: (80, 83), 2: (83, 85), 3: (85, 90), 4: (90, 95), 5: (95, 100)},
+        number_ranges = {
+            1: {  # Level 1: Numbers from 1 to 20
+                i: (1 + (i - 1) * 1, 1 + i) for i in range(1, 21)  # Difficulty 1 to 20
+            },
+            2: {  # Level 2: Numbers from 10 to 50
+                i: (10 + (i - 1) * 2, 10 + i * 2) for i in range(1, 21)  # Difficulty 1 to 20
+            },
+            3: {  # Level 3: Numbers from 30 to 100
+                i: (30 + (i - 1) * 3, 30 + i * 3) for i in range(1, 21)  # Difficulty 1 to 20
+            },
+            4: {  # Level 4: Numbers from 50 to 150
+                i: (50 + (i - 1) * 5, 50 + i * 5) for i in range(1, 21)  # Difficulty 1 to 20
+            },
+            5: {  # Level 5: Numbers from 80 to 200
+                i: (80 + (i - 1) * 6, 80 + i * 6) for i in range(1, 21)  # Difficulty 1 to 20
+            },
+            6: {  # Level 6: Numbers from 100 to 300
+                i: (100 + (i - 1) * 10, 100 + i * 10) for i in range(1, 21)  # Difficulty 1 to 20
+            }
         }
-        
-        number_range = number_range[level][difficulty]
-        return random.randint(number_range[0], number_range[1])
+        print('math utils level',level)
+        print('math utils difficulty',difficulty)
+        print('math utils number_ranges',number_ranges[level][difficulty])
+        range_start, range_end = number_ranges[level][difficulty]
+        return random.randint(range_start, range_end)
 
-    #AC3
     def set_math_operator(self, level, difficulty):
         operator = {
                         1: "+",
@@ -59,22 +69,6 @@ class LevelMathUtil:
             solutions.append(i)
         
         return solutions
-            
-        # def helper(target, current_combination, start, results):
-        #     if target == 0:
-        #         results.append(current_combination[:])
-        #         return
-        #     for i in range(start, target + 1):
-        #         current_combination.append(i)
-        #         helper(target - i, current_combination, i, results)
-        #         current_combination.pop()
-        
-        # results = []
-        # helper(target_number, [], 1, results)
-
-        # unique_numbers = sorted({num for combination in results for num in combination})
-
-        # return unique_numbers
     
     def get_subtraction_solution_set(self, target_number):
         solutions = []

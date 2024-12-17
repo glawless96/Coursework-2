@@ -68,17 +68,23 @@ class LoginPopup:
 
             # Check if clicked buttons
             if self.login_button.is_clicked(event.pos):
-                action = login_user(self.user_text, self.pass_text)
-                if action:
-                    return "login"
-                else: print("Invalid User")
+                user = login_user(self.user_text, self.pass_text)
+                if user:
+                    return {"action": "login", "user": user}
+                else:
+                    print("Invalid User")
+                    return {"action": "login", "user": None}
+            
             if self.register_button.is_clicked(event.pos):
-                action = register_user(self.user_text, self.pass_text)
-                if action:
-                    return "register"
-                else: print("Invalid User")
+                user = register_user(self.user_text, self.pass_text)
+                if user:
+                    return {"action": "register", "user": user}
+                else:
+                    print("Invalid User")
+                    return {"action": "register", "user": None}
+            
             if self.cancel_button.is_clicked(event.pos):
-                return "cancel"
+                return {"action": "cancel", "user": None}
 
         if event.type == pygame.KEYDOWN:
             if self.active_user:
