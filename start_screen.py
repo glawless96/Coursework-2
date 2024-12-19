@@ -54,15 +54,15 @@ def start_screen(screen, user):
     login_popup_instance = None  
     overlay_rect = pygame.Surface((300, 620))  
     overlay_rect.set_alpha(170)  
-    overlay_rect.fill((50, 50, 50)) 
+    overlay_rect.fill((23, 23, 23)) 
 
     howtoplay_rect = pygame.Surface(( 500 ,235)) 
     howtoplay_rect.set_alpha(170)
-    howtoplay_rect.fill((50, 50, 50))
+    howtoplay_rect.fill((23, 23, 23))
 
     feedback_rect = pygame.Surface(( 500 ,285)) 
     feedback_rect.set_alpha(170)
-    feedback_rect.fill((50, 50, 50))
+    feedback_rect.fill((23, 23, 23))
 
     while running:
         screen.fill(color.black) 
@@ -118,7 +118,7 @@ def start_screen(screen, user):
         # Event loop
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                return {"current_screen": "exit_game", "current_user": user} 
             elif login_popup_instance:
                 # If popup is open, pass events to the popup
                 login_details = login_popup_instance.handle_event(event)
@@ -145,7 +145,7 @@ def start_screen(screen, user):
                             elif button == continue_game_button:
                                 return {"current_screen": "continue_game", "current_user": user} 
                             elif button == quit_game_button:
-                                running = False 
+                                return {"current_screen": "exit_game", "current_user": user} 
                             elif button == login_game_button:
                                 login_popup_instance = LoginPopup(screen)
 
@@ -155,4 +155,3 @@ def start_screen(screen, user):
             login_popup_instance.draw() 
 
         pygame.display.flip()
-    pygame.quit()

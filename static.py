@@ -69,3 +69,19 @@ class HeaderQuestions():
         self.subtraction_question = 'Get two numbers whose difference is : '
         self.multiplication_question = 'Get two numbers whose product is : '
         self.division_question = 'Get two numbers whose division is : '
+
+class CollectiablesImages():
+    def __init__(self):
+        self.image = 'data\\images\\collectables\\collectable.png'
+
+class AnimationImages():
+    def __init__(self):
+        self.apple_image = 'data\\images\\animation_fruits\\apple.PNG'
+
+class MathOperationImages():
+    def __init__(self):
+        self.addition_image =  'data\\images\\math_symbols\\addition.png'
+        self.subtraction_image = 'data\\images\\math_symbols\\subtraction.png'
+        self.division_image = 'data\\images\\math_symbols\\division.png'
+        self.multiplication_image = 'data\\images\\math_symbols\\multiplication.png'
+        self.equals_image = 'data\\images\\math_symbols\\equals.png'
