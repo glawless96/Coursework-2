@@ -1,37 +1,49 @@
 
-# Forest of Formulas: Apprentice Alchemist Trial
+# **Forest Maze Adventure**
 
-Welcome to **Forest of Formulas**, a thrilling educational puzzle game where you step into the shoes of an apprentice alchemist! Test your mathematical and problem-solving skills to overcome magical challenges and prove your worth as an alchemist.
+Welcome to **Forest Maze Adventure**, a thrilling journey where you navigate through a mysterious forest maze, collect scattered numbers, and solve a final challenge to win!
+---
+
+## **Objective**
+
+Your ultimate goal is to:  
+1. Navigate through the maze.  
+2. Collect all the numbers scattered throughout the maze.  
+3. Solve the final question using the collected numbers.  
+4. Successfully pass through the maze to complete the game!
 
 ---
 
-## 🧙 Game Premise
+## **How to Play**
 
-You are an apprentice alchemist who has ventured into the **Forest of Formulas**, a mystical place where numbers are the building blocks of life. To pass your final alchemy trial, you must:
+1. **Start the Game**  
+   Begin your journey at the starting point of the maze.
 
-1. **Collect Essence Numbers**: Gather the numerical essences hidden throughout the forest, guarded by mischievous creatures called **Number Snatchers**. 
-2. **Create Magical Formulas**: Use the collected numbers to concoct formulas that summon enchanted plants and animals, which will help you progress.
+2. **Navigate the Maze**  
+   Use the directional controls to move:
+   - **Arrow keys** or **W/A/S/D** to move up, down, left, or right.
+   - Avoid dead ends and backtracking whenever possible.
 
-Conquer all **four mathematical trials**—addition, subtraction, multiplication, and division—to escape the forest and become a full-fledged alchemist!
+3. **Collect Numbers**  
+   - Numbers are scattered throughout the maze.
+   - Move to a square containing a number to collect it. The number will be added to your inventory.
+
+4. **Solve the Final Question**  
+   - At the end of the maze, you’ll be presented with a question or challenge.  
+   - Use the numbers you’ve collected to answer the question.
+   - Examples of final challenges:
+     - Arithmetic puzzles (e.g., "What is the sum of all collected numbers?")
+     - Logical riddles involving the numbers.
+
+5. **Exit the Maze**  
+   - Once the final question is correctly answered, you can proceed to the exit and complete the game.
 
 ---
 
-## 🎮 Gameplay Overview
-
-
-### **Section 1: Collecting Numbers**
-- Navigate the forest to collect **Essence Numbers** scattered across the terrain.
-- **Number Snatchers** will chase and attempt to steal your numbers. Dodge them using skillful movement!
-- You have limited time to gather all the numbers needed to proceed.
-
-### **Section 2: Concocting Formulas**
-- Drag and drop the collected numbers into an alchemical grid.
-- Solve puzzles by forming the correct equations (e.g., 3 + 5 = 8) to create magical plants or animals.
-- Use your creations to clear obstacles and advance to the next trial.
-
-### **Progression**
-- Levels become more challenging as you venture deeper into the forest.
-- Successfully complete all four levels to escape the forest and earn the title of **Master Alchemist**!
+## **Winning the Game**
+- Successfully answer the final question.
+- Navigate to the maze's exit after answering correctly.
+- Enjoy your victory screen and celebrate your achievement!
 
 ---
 
@@ -46,7 +58,6 @@ Conquer all **four mathematical trials**—addition, subtraction, multiplication
   - `monsters/`: Contains enemy.
   - `collectables/`: Contains items.
   - `bg/`: Background images for each level.
-  - `sounds/`: Sound effects and background music for an immersive experience.
 
 ### **Game Logic Files**
 - `player.py`: Implements core game mechanics, such as movement, number collection, and collision detection.
@@ -64,39 +75,71 @@ Conquer all **four mathematical trials**—addition, subtraction, multiplication
 
 ## 🕹️ Controls
 
-- **Arrow Keys/WASD**: Move the apprentice.
-- **Mouse**: Drag and drop numbers to solve formulas.
-- **Spacebar**: Pause the game.
+- **Arrow Keys**: Move the apprentice.
+- **Mouse**: Select the numbers or click the buttons.
 
 ---
 
 ## 💡 Tips for Success
 
 1. **Time is of the essence**: Focus on collecting numbers quickly before time runs out!
-2. **Plan your formulas**: Think ahead about the numbers you need for the alchemical grid.
+2. **Plan your answers**: Think ahead about the numbers you need for the alchemical grid.
 3. **Avoid Number Snatchers**: Learn their movement patterns to dodge them effectively.
 
 ---
 
-## 🚀 How to Play
+## **Installation Instructions**
 
-1. Ensure you have **Python 3.x** and **Pygame** installed.
-2. Download the game files and extract them to a folder.
-3. Open a terminal/command prompt, navigate to the game folder, and run:
-   ```bash
-   python main.py
-   ```
-4. Enjoy the journey through the Forest of Formulas!
+1. **Download the Game**  
+   - Locate the `.exe` file from the official website or distribution platform.
+   
+2. **Run the Installer**  
+   - Double-click the downloaded `.exe` file to start the installation process.
+   - Follow the on-screen prompts to choose the installation directory and complete the setup.
 
----
-
-## 🛠️ Troubleshooting
-
-- **Issue**: The game won't start.
-  - **Solution**: Ensure Python and Pygame are installed. Run `pip install pygame` to install Pygame.
-- **Issue**: Graphics or sounds are missing.
-  - **Solution**: Verify the `assets/` folder is in the correct location and contains all necessary files.
+3. **Launch the Game**  
+   - Once installed, locate the shortcut on your desktop or in the installation directory.
+   - Double-click the shortcut to start your adventure!
 
 ---
 
-Thank you for playing **Forest of Formulas**! We hope you enjoy your journey to becoming a Master Alchemist. 🌿✨
+## **Troubleshooting**
+
+If you encounter any issues, try the following steps:
+
+1. **Game Does Not Launch**  
+   - Ensure your system meets the minimum requirements:
+     - Operating System: Windows 7 or later
+     - Processor: 2.0 GHz dual-core
+     - Memory: 2 GB RAM
+     - Graphics: DirectX 9 compatible
+   - Check that all necessary drivers (e.g., graphics and DirectX) are up to date.
+
+2. **Graphics Issues**  
+   - Adjust the resolution or graphic settings in the game options.
+   - Ensure your monitor is set to the recommended resolution (1280x720 or higher).
+
+3. **Controls Not Working**  
+   - Verify that your keyboard is functioning correctly.
+   - Restart the game to refresh the controls.
+
+4. **Installation Problems**  
+   - Ensure you have sufficient storage space for the installation.
+   - Run the installer as an administrator.
+
+5. **Other Issues**  
+   - Contact support for further assistance.
+     - Email: [Your Support Email]  
+     - Website: [Your Website]
+
+---
+
+## **Requirements**
+
+- **Platform:** PC/Mobile  
+- **Controls:** Keyboard
+- **Recommended Resolution:** 1280x720 or higher for the best experience.
+
+---
+
+Enjoy your adventure in the Forest Maze! 🌲✨
