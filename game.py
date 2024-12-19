@@ -12,8 +12,8 @@ pygame.init()
 pygame.mixer.init()
 
 # Game constants
-GAMENAME = "Coursework 2 Demo Game"
 screen_data = ScreenData()
+GAMENAME = screen_data.game_title
 WIDTH, HEIGHT = screen_data.width, screen_data.height
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption(GAMENAME)

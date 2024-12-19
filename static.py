@@ -2,6 +2,7 @@ class ScreenData():
     def __init__(self):
         self.width = 1280
         self.height = 720
+        self.game_title = 'Forest Maze Adventure'
 
 class CharacterData():
     def __init__(self):

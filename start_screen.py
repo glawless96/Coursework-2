@@ -52,7 +52,7 @@ def start_screen(screen, user):
 
     running = True
     login_popup_instance = None  
-    overlay_rect = pygame.Surface((300, 620))  
+    overlay_rect = pygame.Surface((300, 600))  
     overlay_rect.set_alpha(170)  
     overlay_rect.fill((23, 23, 23)) 
 
