@@ -4,7 +4,7 @@ from maze import Maze
 from player import Player
 from enemy import Enemy
 from collectibles import Collectible
-from static import CharacterData, ColorData, EnemyData, HeaderQuestions, MazeData, ScreenData
+from static import CharacterData, ColorData, CollectiablesImages, EnemyData, HeaderQuestions, MazeData, ScreenData
 from head_up_display import HeadUpDisplay
 from level_math_util import LevelMathUtil
 from help_text import HelpTexts
@@ -19,6 +19,7 @@ char_image = CharacterData()
 enemy_static = EnemyData()
 math_utils = LevelMathUtil()
 header_question = HeaderQuestions()
+collectiables_images = CollectiablesImages()
 
 
 # Screen dimensions and properties
@@ -31,7 +32,7 @@ MAZE_WALL_IMAGEURL = static_maze.wall_image
 MAZE_PATH_IMAGEURL = static_maze.path_image
 MAZE_END_IMAGEURL = static_maze.end_maze_image
 PLAYER_IMAGEURL = char_image.front_image
-COLLECTABLE_IMAGEURL = 'data\\images\\collectables\\collectable_2.png'
+COLLECTABLE_IMAGEURL = collectiables_images.image
 
 clock = pygame.time.Clock()
 
@@ -69,7 +70,8 @@ class Level:
         self.start_game_help_text = HelpTexts(self.operator, self.target_number, self.level, self.difficulty)
         all_possible_solutions = self.possible_solutions
 
-        game_log_row = log_operation(user.id, self.operator, self.game_question, self.difficulty, self.level, False)
+        if user.id != None:
+            game_log_row = log_operation(user.id, self.operator, self.game_question, self.difficulty, self.level, False)
 
         path_image = self.load_image(MAZE_PATH_IMAGEURL, (CELL_SIZE, CELL_SIZE), alpha=True)
         inner_wall = self.load_image(static_maze.inner_wall, (CELL_SIZE, CELL_SIZE), alpha=True)
@@ -102,14 +104,14 @@ class Level:
 
 
         #Help Screen popup
-        help_popup = PopUp(390, 100, 500, 600, (200, 200, 200), color.white)
+        help_popup = PopUp(390, 100, 600, 600, (200, 200, 200), color.white)
         help_popup.set_title("Help", font_size=40, font_style="bold", color=(0,0,255))
 
         help_popup.set_message( self.start_game_help_text.helptext.title, font_size=40, border_group="group1", align="center", spacing=60, border_color=color.white, border_width=3, padding=20)
         for helptext in self.start_game_help_text.helptext.messages:
             help_popup.set_message(helptext, align="center", font_size=30, color=color.white, border_group="group1", spacing=30, border_color=color.white, border_width=4, padding=20)
 
-        help_popup.add_button(0, 190, 100, 40, shape='rect', color=(255, 5, 21), text="Close",
+        help_popup.add_button(0, 250, 100, 40, shape='rect', color=(255, 5, 21), text="Close",
                                        hover_color=(209 , 4, 14), text_color=(255, 255, 255), font_size=36, alpha=170, border_radius=10)
         help_popup.show()
 
@@ -199,12 +201,11 @@ class Level:
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    running = False
+                    return "exit_game"
 
                 hud_action = hud.handle_event(event)
                 if hud_action == "pause":
                     game_pause = not game_pause
-                    print('game_paused ',game_pause)
                 elif hud_action == "help":
                     if len(self.collected_numbers) == 1:
                         player.handle_collision(screen)
@@ -215,7 +216,7 @@ class Level:
                         help_popup.set_message(helptext, align="center", font_size=30, color=color.white, border_group="group1", spacing=30, border_color=color.white, border_width=4, padding=20)
                     
                     help_popup.set_message("Answer might be: ", align="center", font_size=30, spacing = 60)
-                    help_popup.set_message(self.get_solution(all_possible_solutions), align="center", font_size=40, spacing = 60)
+                    help_popup.set_message(self.get_solution(all_possible_solutions), align="center", font_size=40, spacing = 50)
                     game_help_popup_shown = not game_help_popup_shown
                     print("show help popup") 
 
@@ -317,7 +318,8 @@ class Level:
                 # Check if target is achieved
                 if check_target_reached(self.collected_numbers, hud.target_number, self.operator) == True:
                     game_complete_popup.show()
-                    update_operation(game_log_row, True)
+                    if game_log_row:
+                        update_operation(game_log_row, True)
                     game_complete_shown = True
                     game_pause = True
                 elif check_target_reached(self.collected_numbers, hud.target_number, self.operator) == False and len(self.collected_numbers) == 2:
@@ -376,14 +378,13 @@ class Level:
                 mouse_pos = pygame.mouse.get_pos()
                 help_popup.update(mouse_pos, delta_time)
                 help_popup.draw(screen, delta_time)
-                help_popup.start_animation(self.operator, 390, 400, 500, 200)
+                help_popup.start_animation(self.operator, 390, 420, 500, 200)
 
 
 
             pygame.display.flip()
 
-        pygame.quit()
-        return False
+        return "start_screen"
     
     def get_solution(self, all_possible_solutions):
         len_collected_numbers = len(self.collected_numbers)

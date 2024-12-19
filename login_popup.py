@@ -15,11 +15,12 @@ class LoginPopup:
         self.color_inactive = pygame.Color('gray')
         self.color_active = pygame.Color('dodgerblue2')
         self.font = pygame.font.Font(None, 36)
+        self.error = ''
 
         # Buttons
-        self.login_button = Button(170, 340, 120, 50, text="Login", hover_color=(100, 200, 255))
-        self.register_button = Button(310, 340, 120, 50, text="Register", hover_color=(150, 200, 150))
-        self.cancel_button = Button(450, 340, 120, 50, text="Cancel", hover_color=(255, 100, 100))
+        self.login_button = Button(440, 390, 120, 50, text="Login", hover_color=(100, 200, 255))
+        self.register_button = Button(580, 390, 120, 50, text="Register", hover_color=(150, 200, 150))
+        self.cancel_button = Button(720, 390, 120, 50, text="Cancel", hover_color=(255, 100, 100))
 
     def draw(self):
         # Draw translucent background
@@ -43,14 +44,16 @@ class LoginPopup:
         self.cancel_button.draw(self.screen)
 
         # Draw text
-        self.render_text("Username:", (170, 215))
-        self.render_text("Password:", (170, 285))
-        self.render_text(self.user_text, (340, 220), input_box=True)
-        self.render_text('*' * len(self.pass_text), (340, 292), input_box=True)
+        self.render_text("Username:", (180, 215))
+        self.render_text("Password:", (180, 285))
+        self.render_text(self.user_text, (360, 215), 'white', input_box=True)
+        self.render_text('*' * len(self.pass_text), (360, 287), 'white', input_box=True)
+        if self.error != None:
+            self.render_text(self.error, (360, 340), 'red')
 
-    def render_text(self, text, pos, input_box=False):
-        font = self.font if not input_box else pygame.font.Font(None, 28)
-        text_surface = font.render(text, True, pygame.Color('white'))
+    def render_text(self, text, pos, color='white', input_box=False):
+        font = self.font if not input_box else pygame.font.Font(None, 36)
+        text_surface = font.render(text, True, pygame.Color(color))
         self.screen.blit(text_surface, pos)
 
     def handle_event(self, event):
@@ -69,19 +72,17 @@ class LoginPopup:
             # Check if clicked buttons
             if self.login_button.is_clicked(event.pos):
                 user = login_user(self.user_text, self.pass_text)
-                if user:
-                    return {"action": "login", "user": user}
+                if isinstance(user, str):
+                    self.error = user
                 else:
-                    print("Invalid User")
-                    return {"action": "login", "user": None}
+                    return {"action": "login", "user": user}
             
             if self.register_button.is_clicked(event.pos):
                 user = register_user(self.user_text, self.pass_text)
-                if user:
-                    return {"action": "register", "user": user}
+                if isinstance(user, str):
+                    self.error = user
                 else:
-                    print("Invalid User")
-                    return {"action": "register", "user": None}
+                    return {"action": "login", "user": user}
             
             if self.cancel_button.is_clicked(event.pos):
                 return {"action": "cancel", "user": None}

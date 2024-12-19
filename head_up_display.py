@@ -39,11 +39,11 @@ class HeadUpDisplay():
             height=40,
             shape='rect',
             text="Pause",
-            color=(52, 207, 41),
+            color=(232, 60, 60),
             text_color=(0, 0, 0),
             font_size=30,
             border_radius=5,
-            hover_color=(17, 255, 0),
+            hover_color=(255, 0, 0),
             alpha=200
         )
         self.help_button = Button(
@@ -161,16 +161,16 @@ class HeadUpDisplay():
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = pygame.mouse.get_pos()
-            self.update_paused()
             if self.pause_button.is_clicked(mouse_pos):
+                self.update_paused()
                 if self.paused:
                     self.pause_button.text = "Play"
-                    self.hover_color=(17, 255, 0)
-                    self.color=(52, 207, 41)
+                    self.pause_button.hover_color=(17, 255, 0)
+                    self.pause_button.color=(52, 207, 41)
                 else:
                     self.pause_button.text = "Pause"
-                    self.hover_color=(255, 0, 0)
-                    self.color=(232, 60, 60)
+                    self.pause_button.hover_color=(255, 0, 0)
+                    self.pause_button.color=(232, 60, 60)
                 return "pause"
             if self.help_button.is_clicked(mouse_pos):
                 return "help"

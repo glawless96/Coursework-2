@@ -1,6 +1,8 @@
 import pygame
 from button import Button
-from static import ColorData
+from static import AnimationImages, ColorData, MathOperationImages
+animation_images = AnimationImages()
+math_operation_images = MathOperationImages()
 color = ColorData()
 clock = pygame.time.Clock()
 
@@ -187,10 +189,11 @@ class PopUp:
             self.animate_operation(screen, self.animated_rect, delta_time)
 
     def animate_operation(self, screen, rect, delta_time):
-        object_image_path = 'data\\images\\collectables\\collectable_1.png'
-        operation_image_path = 'data\\images\\math_symbols\\addition.png'
-        equals_image_path = 'data\\images\\math_symbols\\equals.png'
+        object_image_path = animation_images.apple_image
+        equals_image_path = math_operation_images.equals_image
+
         if self.animation_type == "+":
+            operation_image_path = math_operation_images.addition_image
             stepText=[
                 "Example for Addition :",
                 "I have 2 apples.",
@@ -199,6 +202,7 @@ class PopUp:
             ]
             self.play_math_animation(screen, rect, delta_time, object_image_path, operation_image_path, equals_image_path, 2, 3, stepText)
         if self.animation_type == "-":
+            operation_image_path = math_operation_images.subtraction_image
             stepText=[
                 "Example for Subtraction :",
                 "I have 5 apples.",
@@ -207,6 +211,7 @@ class PopUp:
             ]
             self.play_math_animation(screen, rect, delta_time, object_image_path, operation_image_path, equals_image_path, 5, 2, stepText)
         if self.animation_type == "*":
+            operation_image_path = math_operation_images.multiplication_image
             stepText = [
                 "Example for Multiplication:",
                 "I have 2 baskets of apples.",
@@ -215,6 +220,7 @@ class PopUp:
             ]
             self.play_math_animation(screen, rect, delta_time, object_image_path, operation_image_path, equals_image_path, 2, 3, stepText)
         if self.animation_type == "/":
+            operation_image_path = math_operation_images.division_image
             stepText = [
                 "Example for Division:",
                 "I have 6 apples.",

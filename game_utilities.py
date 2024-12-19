@@ -59,6 +59,8 @@ def register_user(username, password):
 
         if user_data:
             return User(user_data[0], user_data[1])
+        else:
+            return "User not created. Please try again."
         
     except sqlite3.IntegrityError:
         return None
@@ -69,12 +71,18 @@ def login_user(username, password):
     cursor = connection.cursor()
     cursor.execute('SELECT * FROM players WHERE username = ? AND password = ?', (username, hash_password(password)))
     user_data = cursor.fetchone()
-    connection.close()
 
     if user_data:
+        connection.close()
         return User(user_data[0], user_data[1])
-
-    return None
+    else:
+        cursor.execute('SELECT * FROM players WHERE username = ?', (username,))
+        user = cursor.fetchone()
+        connection.close()
+        if user:
+            return "Wrong Password"
+        else:
+            return "Invalid User"
 
 def get_operations_by_user(user_id):
     connection = sqlite3.connect(db_file)
