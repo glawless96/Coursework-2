@@ -91,7 +91,8 @@ Your ultimate goal is to:
 ## **Installation Instructions**
 
 1. **Download the Game**  
-   - Locate and dpwnload the `game_Gold.exe` file from the 'Game Setups' folder.
+   - Locate and download the `game_Gold.exe` file from the 'Game Setups' folder.
+   - Or Download the game from the link "https://computingservices-my.sharepoint.com/:u:/g/personal/sbw32_bath_ac_uk/EfkpEowoYopOmC0D2XU4-gMBWVwebqfCEqrSD0g7NXsOmQ?email=sbw32%40bath.ac.uk&e=JMMsnm"
    
 2. **Run the Installer**  
    - Double-click the downloaded `.exe` file to start the installation process.
@@ -129,14 +130,13 @@ If you encounter any issues, try the following steps:
 
 5. **Other Issues**  
    - Contact support for further assistance.
-     - Email: [Your Support Email]  
-     - Website: [Your Website]
+     - Email: sbw32@bath.ac.uk 
 
 ---
 
 ## **Requirements**
 
-- **Platform:** PC/Mobile  
+- **Platform:** PC  
 - **Controls:** Keyboard
 - **Recommended Resolution:** 1280x720 or higher for the best experience.
 
