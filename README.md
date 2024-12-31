@@ -91,7 +91,7 @@ Your ultimate goal is to:
 ## **Installation Instructions**
 
 1. **Download the Game**  
-   - Locate the `.exe` file from the official website or distribution platform.
+   - Locate and dpwnload the `game_Gold.exe` file from the 'Game Setups' folder.
    
 2. **Run the Installer**  
    - Double-click the downloaded `.exe` file to start the installation process.
